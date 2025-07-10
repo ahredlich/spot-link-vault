@@ -8,35 +8,62 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - glassmorphic theme */
+    --background: 240 20% 98%;
+    --foreground: 240 20% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Glass card backgrounds */
+    --card: 240 20% 100%;
+    --card-foreground: 240 20% 15%;
+    --glass: 240 20% 100%;
+    --glass-border: 240 20% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Glassmorphic surfaces */
+    --popover: 240 20% 100%;
+    --popover-foreground: 240 20% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary brand colors - vibrant blue */
+    --primary: 220 100% 60%;
+    --primary-foreground: 240 20% 98%;
+    --primary-glow: 220 100% 70%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary glass surfaces */
+    --secondary: 240 20% 96%;
+    --secondary-foreground: 240 20% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted elements */
+    --muted: 240 20% 94%;
+    --muted-foreground: 240 10% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent colors */
+    --accent: 280 60% 65%;
+    --accent-foreground: 240 20% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Destructive actions */
+    --destructive: 0 85% 65%;
+    --destructive-foreground: 240 20% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Borders and inputs */
+    --border: 240 20% 88%;
+    --input: 240 20% 96%;
+    --ring: 220 100% 60%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Glassmorphic effects */
+    --glass-bg: 240 20% 100%;
+    --glass-border: 240 20% 92%;
+    --glass-shadow: 240 20% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 100% 60%), hsl(280 60% 65%));
+    --gradient-glass: linear-gradient(135deg, hsl(240 20% 100% / 0.8), hsl(240 20% 98% / 0.6));
+    --gradient-border: linear-gradient(135deg, hsl(240 20% 90%), hsl(240 20% 85%));
+    
+    /* Animations */
+    --transition-glass: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-glass: 0 8px 32px 0 hsl(240 20% 60% / 0.1);
+    --shadow-glass-hover: 0 12px 40px 0 hsl(240 20% 60% / 0.15);
 
     --sidebar-background: 0 0% 98%;
 
@@ -101,5 +128,41 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(240 20% 98%), hsl(240 25% 96%));
+    min-height: 100vh;
+  }
+}
+
+@layer components {
+  /* Glassmorphic card styles */
+  .glass-card {
+    @apply backdrop-blur-md border border-glass-border/50 shadow-lg;
+    background: linear-gradient(135deg, hsl(240 20% 100% / 0.8), hsl(240 20% 98% / 0.6));
+    transition: var(--transition-glass);
+  }
+  
+  .glass-card:hover {
+    @apply shadow-xl;
+    box-shadow: var(--shadow-glass-hover);
+    transform: translateY(-2px);
+  }
+  
+  /* Glass button variants */
+  .btn-glass {
+    @apply backdrop-blur-md border border-glass-border/50;
+    background: linear-gradient(135deg, hsl(240 20% 100% / 0.9), hsl(240 20% 96% / 0.7));
+    transition: var(--transition-glass);
+  }
+  
+  .btn-glass:hover {
+    background: linear-gradient(135deg, hsl(240 20% 100%), hsl(240 20% 98%));
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glass);
+  }
+  
+  /* Search glass effect */
+  .search-glass {
+    @apply backdrop-blur-lg border border-white/20;
+    background: linear-gradient(135deg, hsl(240 20% 100% / 0.95), hsl(240 20% 98% / 0.8));
   }
 }
