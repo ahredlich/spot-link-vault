@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -12,7 +13,9 @@ import {
   Archive,
   Hash,
   ChevronRight,
-  ChevronDown
+  ChevronDown,
+  Upload,
+  Download
 } from "lucide-react";
 
 interface CollectionsSidebarProps {
@@ -142,7 +145,13 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
       </ScrollArea>
 
       {/* Footer */}
-      <div className="p-4 border-t border-white/10">
+      <div className="p-4 border-t border-white/10 space-y-1">
+        <Link to="/import-export">
+          <Button variant="ghost" className="w-full justify-start gap-2 h-8">
+            <Upload className="h-4 w-4" />
+            <span className="text-sm">Import & Export</span>
+          </Button>
+        </Link>
         <Button variant="ghost" className="w-full justify-start gap-2 h-8">
           <Settings className="h-4 w-4" />
           <span className="text-sm">Settings</span>

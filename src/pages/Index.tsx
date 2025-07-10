@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
