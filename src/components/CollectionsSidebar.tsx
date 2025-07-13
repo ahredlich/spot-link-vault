@@ -146,12 +146,6 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
 
       {/* Footer */}
       <div className="p-4 border-t border-white/10 space-y-1">
-        <Link to="/import-export">
-          <Button variant="ghost" className="w-full justify-start gap-2 h-8">
-            <Upload className="h-4 w-4" />
-            <span className="text-sm">Import & Export</span>
-          </Button>
-        </Link>
         <Button variant="ghost" className="w-full justify-start gap-2 h-8">
           <Settings className="h-4 w-4" />
           <span className="text-sm">Settings</span>
