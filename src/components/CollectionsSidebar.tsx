@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   FolderOpen, 
   Folder, 
@@ -14,22 +15,8 @@ import {
   ChevronRight,
   ChevronDown,
   Upload,
-  Menu
+  Download
 } from "lucide-react";
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarFooter,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarTrigger,
-  useSidebar,
-} from "@/components/ui/sidebar";
 
 interface CollectionsSidebarProps {
   selectedCollection: string;
@@ -53,86 +40,59 @@ const quickAccess = [
 
 export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: CollectionsSidebarProps) => {
   const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(true);
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar className="border-r border-white/10 bg-background/80 backdrop-blur-xl" collapsible="icon">
-      <SidebarHeader className="p-4 border-b border-white/10">
-        {isCollapsed ? (
-          <div className="flex justify-center">
-            <SidebarTrigger className="h-8 w-8">
-              <Menu className="h-4 w-4" />
-            </SidebarTrigger>
+    <div className="w-64 h-screen glass-card rounded-none border-r border-white/10 flex flex-col">
+      <div className="p-4 border-b border-white/10">
+        <div className="flex items-center gap-2 mb-4">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+            <Archive className="h-4 w-4 text-white" />
           </div>
-        ) : (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Archive className="h-4 w-4 text-white" />
-              </div>
-              <span className="font-semibold text-foreground">BookmarkApp</span>
-            </div>
-            <SidebarTrigger className="h-6 w-6 ml-auto">
-              <Menu className="h-4 w-4" />
-            </SidebarTrigger>
-          </div>
-        )}
+          <span className="font-semibold text-foreground">BookmarkApp</span>
+        </div>
         
-        {!isCollapsed && (
-          <Button variant="glass-primary" className="w-full justify-start gap-2 mt-4">
-            <Plus className="h-4 w-4" />
-            Add Bookmark
-          </Button>
-        )}
-      </SidebarHeader>
+        <Button variant="glass-primary" className="w-full justify-start gap-2">
+          <Plus className="h-4 w-4" />
+          Add Bookmark
+        </Button>
+      </div>
 
-      <SidebarContent>
-        {/* Quick Access */}
-        <SidebarGroup>
-          {!isCollapsed && (
-            <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+      <ScrollArea className="flex-1">
+        <div className="p-4 space-y-1">
+          {/* Quick Access */}
+          <div className="mb-6">
+            <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 px-2">
               Quick Access
-            </SidebarGroupLabel>
-          )}
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {quickAccess.map((item) => {
-                const Icon = item.icon;
-                const isSelected = selectedCollection === item.name;
-                
-                return (
-                  <SidebarMenuItem key={item.name}>
-                    <SidebarMenuButton
-                      onClick={() => onCollectionSelect(item.name)}
-                      isActive={isSelected}
-                      className="h-8"
-                      tooltip={isCollapsed ? item.name : undefined}
-                    >
-                      <Icon className="h-4 w-4" />
-                      {!isCollapsed && (
-                        <>
-                          <span className="text-sm">{item.name}</span>
-                          <Badge variant="secondary" className="bg-white/10 border-white/20 text-xs ml-auto">
-                            {item.count}
-                          </Badge>
-                        </>
-                      )}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+            </h3>
+            {quickAccess.map((item) => {
+              const Icon = item.icon;
+              const isSelected = selectedCollection === item.name;
+              
+              return (
+                <Button
+                  key={item.name}
+                  variant={isSelected ? "glass-primary" : "ghost"}
+                  className="w-full justify-between h-8 px-2 mb-1"
+                  onClick={() => onCollectionSelect(item.name)}
+                >
+                  <div className="flex items-center gap-2">
+                    <Icon className="h-4 w-4" />
+                    <span className="text-sm">{item.name}</span>
+                  </div>
+                  <Badge variant="secondary" className="bg-white/10 border-white/20 text-xs">
+                    {item.count}
+                  </Badge>
+                </Button>
+              );
+            })}
+          </div>
 
-        {/* Collections */}
-        <SidebarGroup>
-          {!isCollapsed && (
-            <div className="flex items-center justify-between px-2">
-              <SidebarGroupLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          {/* Collections */}
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-xs font-medium text-muted-foreground uppercase tracking-wider px-2">
                 Collections
-              </SidebarGroupLabel>
+              </h3>
               <Button
                 variant="ghost"
                 size="icon"
@@ -146,67 +106,57 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                 )}
               </Button>
             </div>
-          )}
-          
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {(isCollapsed || isCollectionsExpanded) && collections.map((collection) => {
-                const Icon = collection.icon;
-                const isSelected = selectedCollection === collection.name;
-                
-                return (
-                  <SidebarMenuItem key={collection.name}>
-                    <SidebarMenuButton
+            
+            {isCollectionsExpanded && (
+              <div className="space-y-1">
+                {collections.map((collection) => {
+                  const Icon = collection.icon;
+                  const isSelected = selectedCollection === collection.name;
+                  
+                  return (
+                    <Button
+                      key={collection.name}
+                      variant={isSelected ? "glass-primary" : "ghost"}
+                      className="w-full justify-between h-8 px-2"
                       onClick={() => onCollectionSelect(collection.name)}
-                      isActive={isSelected}
-                      className="h-8"
-                      tooltip={isCollapsed ? collection.name : undefined}
                     >
-                      <Icon className="h-4 w-4" />
-                      {!isCollapsed && (
-                        <>
-                          <span className="text-sm truncate">{collection.name}</span>
-                          <Badge variant="secondary" className="bg-white/10 border-white/20 text-xs ml-auto">
-                            {collection.count}
-                          </Badge>
-                        </>
-                      )}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-              
-              {!isCollapsed && (isCollectionsExpanded || isCollapsed) && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton className="h-8 text-muted-foreground hover:text-primary">
-                    <Plus className="h-4 w-4" />
-                    <span className="text-sm">New Collection</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span className="text-sm truncate">{collection.name}</span>
+                      </div>
+                      <Badge variant="secondary" className="bg-white/10 border-white/20 text-xs">
+                        {collection.count}
+                      </Badge>
+                    </Button>
+                  );
+                })}
+                
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start h-8 px-2 text-muted-foreground hover:text-primary"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  <span className="text-sm">New Collection</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </ScrollArea>
 
-      <SidebarFooter className="p-4 border-t border-white/10">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild className="h-8" tooltip={isCollapsed ? "Import & Export" : undefined}>
-              <Link to="/import-export" className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
-                {!isCollapsed && <span className="text-sm">Import & Export</span>}
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton className="h-8" tooltip={isCollapsed ? "Settings" : undefined}>
-              <Settings className="h-4 w-4" />
-              {!isCollapsed && <span className="text-sm">Settings</span>}
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+      {/* Footer */}
+      <div className="p-4 border-t border-white/10 space-y-1">
+        <Link to="/import-export">
+          <Button variant="ghost" className="w-full justify-start gap-2 h-8">
+            <Upload className="h-4 w-4" />
+            <span className="text-sm">Import & Export</span>
+          </Button>
+        </Link>
+        <Button variant="ghost" className="w-full justify-start gap-2 h-8">
+          <Settings className="h-4 w-4" />
+          <span className="text-sm">Settings</span>
+        </Button>
+      </div>
+    </div>
   );
 };

@@ -7,7 +7,6 @@ import { Card } from "@/components/ui/card";
 import { BookmarkCard } from "@/components/BookmarkCard";
 import { AddBookmarkDialog } from "@/components/AddBookmarkDialog";
 import { CollectionsSidebar } from "@/components/CollectionsSidebar";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 // Mock data for demonstration
 const mockBookmarks = [
@@ -74,111 +73,109 @@ const Index = () => {
   });
 
   return (
-    <SidebarProvider>
-      <div className="min-h-screen w-full flex">
-        {/* Sidebar */}
-        <CollectionsSidebar 
-          selectedCollection={selectedCollection}
-          onCollectionSelect={setSelectedCollection}
-        />
+    <div className="min-h-screen w-full flex">
+      {/* Sidebar */}
+      <CollectionsSidebar 
+        selectedCollection={selectedCollection}
+        onCollectionSelect={setSelectedCollection}
+      />
 
-        {/* Main Content */}
-        <SidebarInset className="flex-1 flex flex-col">
-          {/* Header */}
-          <header className="sticky top-0 z-10 backdrop-blur-lg border-b border-white/10 bg-white/5">
-            <div className="flex items-center justify-between p-4 max-w-7xl mx-auto w-full">
-              <div className="flex items-center gap-4 flex-1">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  Bookmarks
-                </h1>
-                
-                {/* Search */}
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search bookmarks..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 search-glass border-white/20"
-                  />
-                </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <header className="sticky top-0 z-10 backdrop-blur-lg border-b border-white/10 bg-white/5">
+          <div className="flex items-center justify-between p-4 max-w-7xl mx-auto w-full">
+            <div className="flex items-center gap-4 flex-1">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Bookmarks
+              </h1>
+              
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search bookmarks..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 search-glass border-white/20"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {/* View Toggle */}
+              <div className="flex items-center bg-white/10 backdrop-blur-md rounded-lg p-1 border border-white/20">
+                <Button
+                  variant={viewMode === "grid" ? "glass-primary" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("grid")}
+                  className="h-8 w-8 p-0"
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === "list" ? "glass-primary" : "ghost"}
+                  size="sm"
+                  onClick={() => setViewMode("list")}
+                  className="h-8 w-8 p-0"
+                >
+                  <List className="h-4 w-4" />
+                </Button>
               </div>
 
-              <div className="flex items-center gap-2">
-                {/* View Toggle */}
-                <div className="flex items-center bg-white/10 backdrop-blur-md rounded-lg p-1 border border-white/20">
-                  <Button
-                    variant={viewMode === "grid" ? "glass-primary" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("grid")}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Grid className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "list" ? "glass-primary" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("list")}
-                    className="h-8 w-8 p-0"
-                  >
-                    <List className="h-4 w-4" />
-                  </Button>
-                </div>
+              {/* Add Bookmark */}
+              <Button
+                variant="glass-primary"
+                onClick={() => setIsAddDialogOpen(true)}
+                className="gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add Bookmark
+              </Button>
+            </div>
+          </div>
+        </header>
 
-                {/* Add Bookmark */}
-                <Button
-                  variant="glass-primary"
-                  onClick={() => setIsAddDialogOpen(true)}
-                  className="gap-2"
-                >
-                  <Plus className="h-4 w-4" />
-                  Add Bookmark
+        {/* Content */}
+        <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
+          {filteredBookmarks.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-12">
+              <div className="glass-card p-8 text-center max-w-md">
+                <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No bookmarks found</h3>
+                <p className="text-muted-foreground mb-4">
+                  {searchQuery ? "Try adjusting your search terms" : "Start by adding your first bookmark"}
+                </p>
+                <Button variant="glass-primary" onClick={() => setIsAddDialogOpen(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Your First Bookmark
                 </Button>
               </div>
             </div>
-          </header>
-
-          {/* Content */}
-          <main className="flex-1 p-6 max-w-7xl mx-auto w-full">
-            {filteredBookmarks.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12">
-                <div className="glass-card p-8 text-center max-w-md">
-                  <Bookmark className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No bookmarks found</h3>
-                  <p className="text-muted-foreground mb-4">
-                    {searchQuery ? "Try adjusting your search terms" : "Start by adding your first bookmark"}
-                  </p>
-                  <Button variant="glass-primary" onClick={() => setIsAddDialogOpen(true)}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Your First Bookmark
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className={
-                viewMode === "grid" 
-                  ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
-                  : "space-y-4"
-              }>
-                {filteredBookmarks.map((bookmark) => (
-                  <BookmarkCard
-                    key={bookmark.id}
-                    bookmark={bookmark}
-                    viewMode={viewMode}
-                  />
-                ))}
-              </div>
-            )}
-          </main>
-        </SidebarInset>
-
-        {/* Add Bookmark Dialog */}
-        <AddBookmarkDialog 
-          open={isAddDialogOpen}
-          onOpenChange={setIsAddDialogOpen}
-        />
+          ) : (
+            <div className={
+              viewMode === "grid" 
+                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+                : "space-y-4"
+            }>
+              {filteredBookmarks.map((bookmark) => (
+                <BookmarkCard
+                  key={bookmark.id}
+                  bookmark={bookmark}
+                  viewMode={viewMode}
+                />
+              ))}
+            </div>
+          )}
+        </main>
       </div>
-    </SidebarProvider>
+
+      {/* Add Bookmark Dialog */}
+      <AddBookmarkDialog 
+        open={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+      />
+    </div>
   );
 };
 
