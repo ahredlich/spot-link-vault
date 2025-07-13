@@ -141,7 +141,7 @@ All colors MUST be HSL.
     transition: var(--transition-glass);
   }
   
-  .glass-card:hover {
+  .glass-card:hover:not([role="dialog"]) {
     @apply shadow-xl;
     box-shadow: var(--shadow-glass-hover);
     transform: translateY(-2px);
