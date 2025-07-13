@@ -42,7 +42,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
   const [isCollectionsExpanded, setIsCollectionsExpanded] = useState(true);
 
   return (
-    <div className="w-64 h-screen glass-card rounded-none border-r border-white/10 flex flex-col">
+    <div className="w-64 h-full lg:h-screen glass-card rounded-none border-r border-white/10 flex flex-col">
       <div className="p-4 border-b border-white/10">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
