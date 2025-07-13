@@ -51,10 +51,6 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
           <span className="font-semibold text-foreground">BookmarkApp</span>
         </div>
         
-        <Button variant="glass-primary" className="w-full justify-start gap-2">
-          <Plus className="h-4 w-4" />
-          Add Bookmark
-        </Button>
       </div>
 
       <ScrollArea className="flex-1">
