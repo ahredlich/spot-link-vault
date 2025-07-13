@@ -57,19 +57,27 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
   const isCollapsed = state === "collapsed";
 
   return (
-    <Sidebar className="glass-card border-r border-white/10" collapsible="icon">
+    <Sidebar className="border-r border-white/10 bg-background/80 backdrop-blur-xl" collapsible="icon">
       <SidebarHeader className="p-4 border-b border-white/10">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <Archive className="h-4 w-4 text-white" />
-            </div>
-            {!isCollapsed && <span className="font-semibold text-foreground">BookmarkApp</span>}
+        {isCollapsed ? (
+          <div className="flex justify-center">
+            <SidebarTrigger className="h-8 w-8">
+              <Menu className="h-4 w-4" />
+            </SidebarTrigger>
           </div>
-          <SidebarTrigger className="h-6 w-6 ml-auto">
-            <Menu className="h-4 w-4" />
-          </SidebarTrigger>
-        </div>
+        ) : (
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                <Archive className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-semibold text-foreground">BookmarkApp</span>
+            </div>
+            <SidebarTrigger className="h-6 w-6 ml-auto">
+              <Menu className="h-4 w-4" />
+            </SidebarTrigger>
+          </div>
+        )}
         
         {!isCollapsed && (
           <Button variant="glass-primary" className="w-full justify-start gap-2 mt-4">
