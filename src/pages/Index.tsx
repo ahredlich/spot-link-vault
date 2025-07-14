@@ -115,10 +115,6 @@ const LandingPage = () => {
                 <Zap className="h-5 w-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="gap-2 px-8 py-6 text-lg border-white/20 hover:bg-white/10">
-              <ExternalLink className="h-5 w-5" />
-              See Demo
-            </Button>
           </div>
 
           {/* Preview Cards */}
