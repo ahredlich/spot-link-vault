@@ -81,7 +81,7 @@ const LandingPage = () => {
             </Link>
             <Link to="/auth">
               <Button variant="glass-primary" className="gap-2">
-                Get Started
+                Sign In
                 <Sparkles className="h-4 w-4" />
               </Button>
             </Link>
