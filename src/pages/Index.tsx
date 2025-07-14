@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload, Menu } from "lucide-react";
+import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload, Menu, Star, Shield, Zap, Download, Heart, BookOpen, Users, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { BookmarkCard } from "@/components/BookmarkCard";
 import { AddBookmarkDialog } from "@/components/AddBookmarkDialog";
 import { CollectionsSidebar } from "@/components/CollectionsSidebar";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock data for demonstration
 const mockBookmarks = [
@@ -57,7 +58,182 @@ const mockBookmarks = [
   }
 ];
 
-const Index = () => {
+// Landing Page Component for non-authenticated users
+const LandingPage = () => {
+  return (
+    <div className="min-h-screen w-full bg-gradient-subtle">
+      {/* Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-lg border-b border-white/10 bg-white/5">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              SpotLink Vault
+            </span>
+          </div>
+          <div className="flex items-center gap-4">
+            <Link to="/auth">
+              <Button variant="ghost" className="text-foreground hover:text-primary">
+                Sign In
+              </Button>
+            </Link>
+            <Link to="/auth">
+              <Button variant="glass-primary" className="gap-2">
+                Get Started
+                <Sparkles className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="container mx-auto px-4 py-16 lg:py-24">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-8">
+              <Star className="h-4 w-4" />
+              Your Ultimate Bookmark Management Solution
+            </div>
+          </div>
+          
+          <h1 className="text-4xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent leading-tight">
+            Organize Your Digital World
+          </h1>
+          
+          <p className="text-lg lg:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+            Save, organize, and access your favorite links from anywhere. 
+            Build collections, tag content, and never lose track of important resources again.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <Link to="/auth">
+              <Button size="lg" variant="glass-primary" className="gap-2 px-8 py-6 text-lg">
+                Start Organizing
+                <Zap className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Button size="lg" variant="outline" className="gap-2 px-8 py-6 text-lg border-white/20 hover:bg-white/10">
+              <ExternalLink className="h-5 w-5" />
+              See Demo
+            </Button>
+          </div>
+
+          {/* Preview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Card className="glass-card p-6 text-left">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mb-4">
+                <Bookmark className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Smart Collections</h3>
+              <p className="text-muted-foreground text-sm">Organize bookmarks into intelligent collections with custom tags and categories.</p>
+            </Card>
+            
+            <Card className="glass-card p-6 text-left">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center mb-4">
+                <Search className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Instant Search</h3>
+              <p className="text-muted-foreground text-sm">Find any bookmark instantly with powerful search across titles, descriptions, and tags.</p>
+            </Card>
+            
+            <Card className="glass-card p-6 text-left">
+              <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center mb-4">
+                <Shield className="h-6 w-6 text-white" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Secure & Private</h3>
+              <p className="text-muted-foreground text-sm">Your bookmarks are encrypted and stored securely with enterprise-grade protection.</p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Everything You Need
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Powerful features designed to make bookmark management effortless and efficient.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="glass-card p-6 text-center hover-scale">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
+              <Download className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Import & Export</h3>
+            <p className="text-muted-foreground text-sm">Seamlessly import from browsers or export your data anytime.</p>
+          </div>
+          
+          <div className="glass-card p-6 text-center hover-scale">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center mx-auto mb-4">
+              <Tag className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Smart Tagging</h3>
+            <p className="text-muted-foreground text-sm">Auto-categorize and tag your bookmarks intelligently.</p>
+          </div>
+          
+          <div className="glass-card p-6 text-center hover-scale">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
+              <Heart className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Favorites</h3>
+            <p className="text-muted-foreground text-sm">Mark important bookmarks and access them quickly.</p>
+          </div>
+          
+          <div className="glass-card p-6 text-center hover-scale">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4">
+              <Users className="h-8 w-8 text-white" />
+            </div>
+            <h3 className="text-lg font-semibold mb-2">Team Sharing</h3>
+            <p className="text-muted-foreground text-sm">Share collections with your team and collaborate efficiently.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="container mx-auto px-4 py-16 text-center">
+        <div className="glass-card p-12 max-w-3xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Ready to Get Organized?
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
+            Join thousands of users who have transformed their digital workflow with SpotLink Vault.
+          </p>
+          <Link to="/auth">
+            <Button size="lg" variant="glass-primary" className="gap-2 px-8 py-6 text-lg">
+              Create Your Account
+              <Sparkles className="h-5 w-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 bg-white/5 backdrop-blur-lg">
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="flex items-center justify-center gap-2 mb-4">
+            <div className="w-6 h-6 rounded bg-gradient-primary flex items-center justify-center">
+              <BookOpen className="h-4 w-4 text-white" />
+            </div>
+            <span className="font-semibold text-foreground">SpotLink Vault</span>
+          </div>
+          <p className="text-muted-foreground text-sm">
+            © 2024 SpotLink Vault. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+// Main Bookmark Manager Component for authenticated users
+const BookmarkManager = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedCollection, setSelectedCollection] = useState("All");
@@ -204,6 +380,27 @@ const Index = () => {
       />
     </div>
   );
+};
+
+// Main Index Component
+const Index = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center bg-gradient-subtle">
+        <div className="glass-card p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4">
+            <BookOpen className="h-8 w-8 text-white animate-pulse" />
+          </div>
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show landing page if not authenticated, bookmark manager if authenticated
+  return user ? <BookmarkManager /> : <LandingPage />;
 };
 
 export default Index;
