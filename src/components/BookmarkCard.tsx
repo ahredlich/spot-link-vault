@@ -85,7 +85,7 @@ export const BookmarkCard = ({
         <div className="flex items-start gap-3 sm:gap-4">
           {/* Compact thumbnail */}
           <div className="flex-shrink-0">
-            <div className="relative overflow-hidden rounded-lg">
+            <div className="relative overflow-hidden rounded-2xl">
               <img
                 src={bookmark.thumbnail}
                 alt={bookmark.title}
