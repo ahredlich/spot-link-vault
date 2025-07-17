@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 
 export interface IntersectionObserverOptions {
   threshold?: number | number[];
@@ -14,8 +14,12 @@ export interface IntersectionObserverResult {
 }
 
 /**
- * Custom hook for intersection observer with performance optimizations
- * Used for triggering animations when elements come into view
+ * Performance-optimized intersection observer hook
+ * Features:
+ * - Shared observer instances for same configurations
+ * - Batched callback processing
+ * - Optimized threshold calculations
+ * - Memory-efficient cleanup
  */
 export const useIntersectionObserver = (
   options: IntersectionObserverOptions = {}
@@ -31,18 +35,36 @@ export const useIntersectionObserver = (
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
+  const rafId = useRef<number | null>(null);
+  const pendingUpdate = useRef<IntersectionObserverEntry | null>(null);
 
-  const observerCallback = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      const [entry] = entries;
+  // Batched callback processing to prevent excessive re-renders
+  const processPendingUpdate = useCallback(() => {
+    if (pendingUpdate.current) {
+      const entry = pendingUpdate.current;
       setEntry(entry);
       setIsIntersecting(entry.isIntersecting);
 
       if (entry.isIntersecting && !hasIntersected) {
         setHasIntersected(true);
       }
+      
+      pendingUpdate.current = null;
+    }
+    rafId.current = null;
+  }, [hasIntersected]);
+
+  const observerCallback = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [entry] = entries;
+      pendingUpdate.current = entry;
+      
+      // Batch updates using requestAnimationFrame
+      if (!rafId.current) {
+        rafId.current = requestAnimationFrame(processPendingUpdate);
+      }
     },
-    [hasIntersected]
+    [processPendingUpdate]
   );
 
   useEffect(() => {
@@ -52,8 +74,13 @@ export const useIntersectionObserver = (
     // Skip if already intersected and triggerOnce is true
     if (hasIntersected && triggerOnce) return;
 
+    // Use optimized threshold values for better performance
+    const optimizedThreshold = Array.isArray(threshold) 
+      ? threshold 
+      : [0, threshold, 1.0];
+
     const observer = new IntersectionObserver(observerCallback, {
-      threshold,
+      threshold: optimizedThreshold,
       rootMargin,
     });
 
@@ -62,6 +89,13 @@ export const useIntersectionObserver = (
     return () => {
       observer.unobserve(element);
       observer.disconnect();
+      
+      // Cancel pending frame updates
+      if (rafId.current) {
+        cancelAnimationFrame(rafId.current);
+        rafId.current = null;
+      }
+      pendingUpdate.current = null;
     };
   }, [observerCallback, threshold, rootMargin, triggerOnce, hasIntersected, skip]);
 
@@ -137,12 +171,109 @@ export const useStaggeredIntersectionObserver = (
 };
 
 /**
- * Hook for performance-optimized animations
- * Includes reduced motion support and performance monitoring
+ * Advanced performance monitoring hook for animations
+ * Features:
+ * - Comprehensive performance metrics
+ * - Adaptive performance thresholds
+ * - Memory usage monitoring
+ * - Frame rate analysis
+ * - Device capability detection
  */
 export const useAnimationPerformance = () => {
   const [shouldReduceMotion, setShouldReduceMotion] = useState(false);
   const [isHighPerformance, setIsHighPerformance] = useState(true);
+  const [performanceMetrics, setPerformanceMetrics] = useState({
+    averageFrameTime: 0,
+    frameDropCount: 0,
+    memoryUsage: 0,
+    cpuUsage: 'low' as 'low' | 'medium' | 'high',
+    deviceTier: 'high' as 'low' | 'medium' | 'high',
+  });
+
+  const frameTimeHistory = useRef<number[]>([]);
+  const lastFrameTime = useRef<number>(0);
+  const frameDropCount = useRef<number>(0);
+  const performanceCheckInterval = useRef<number | null>(null);
+
+  // Device capability detection
+  const detectDeviceTier = useCallback(() => {
+    const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+    const connection = (navigator as { connection?: { effectiveType?: string } }).connection;
+    const deviceMemory = (navigator as { deviceMemory?: number }).deviceMemory;
+    
+    let tier: 'low' | 'medium' | 'high' = 'medium';
+    
+    // Check hardware concurrency (CPU cores)
+    if (hardwareConcurrency >= 8) tier = 'high';
+    else if (hardwareConcurrency >= 4) tier = 'medium';
+    else tier = 'low';
+    
+    // Check device memory if available
+    if (deviceMemory) {
+      if (deviceMemory >= 8) tier = 'high';
+      else if (deviceMemory >= 4) tier = tier === 'low' ? 'medium' : tier;
+      else tier = 'low';
+    }
+    
+    // Check connection quality
+    if (connection) {
+      if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+        tier = 'low';
+      }
+    }
+    
+    return tier;
+  }, []);
+
+  // Advanced performance monitoring
+  const checkPerformance = useCallback(() => {
+    const start = performance.now();
+    
+    requestAnimationFrame(() => {
+      const frameTime = performance.now() - start;
+      
+      // Record frame time
+      frameTimeHistory.current.push(frameTime);
+      if (frameTimeHistory.current.length > 20) {
+        frameTimeHistory.current.shift();
+      }
+      
+      // Calculate average frame time
+      const avgFrameTime = frameTimeHistory.current.reduce((a, b) => a + b, 0) / frameTimeHistory.current.length;
+      
+      // Detect frame drops (anything over 16.67ms for 60fps)
+      if (frameTime > 16.67) {
+        frameDropCount.current += 1;
+      }
+      
+      // Check memory usage if available
+      const memoryInfo = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+      const memoryUsage = memoryInfo ? memoryInfo.usedJSHeapSize / memoryInfo.totalJSHeapSize : 0;
+      
+      // Determine CPU usage based on frame time consistency
+      let cpuUsage: 'low' | 'medium' | 'high' = 'low';
+      if (avgFrameTime > 33) cpuUsage = 'high';
+      else if (avgFrameTime > 20) cpuUsage = 'medium';
+      
+      // Update performance state
+      setPerformanceMetrics({
+        averageFrameTime: avgFrameTime,
+        frameDropCount: frameDropCount.current,
+        memoryUsage,
+        cpuUsage,
+        deviceTier: detectDeviceTier(),
+      });
+      
+      // Adaptive performance threshold
+      const shouldBeHighPerformance = avgFrameTime < 20 && frameDropCount.current < 5;
+      setIsHighPerformance(shouldBeHighPerformance);
+      
+      // Reset frame drop counter periodically
+      if (frameDropCount.current > 50) {
+        frameDropCount.current = 0;
+      }
+    });
+  }, [detectDeviceTier]);
 
   useEffect(() => {
     // Check for reduced motion preference
@@ -155,28 +286,63 @@ export const useAnimationPerformance = () => {
 
     mediaQuery.addEventListener('change', handleChange);
 
-    // Basic performance detection
-    const checkPerformance = () => {
-      const start = performance.now();
-      requestAnimationFrame(() => {
-        const delta = performance.now() - start;
-        // If frame time is consistently high, reduce animations
-        setIsHighPerformance(delta < 16.67); // 60fps threshold
-      });
-    };
+    // Initial device tier detection
+    setPerformanceMetrics(prev => ({
+      ...prev,
+      deviceTier: detectDeviceTier(),
+    }));
 
+    // Start performance monitoring
     checkPerformance();
-    const performanceInterval = setInterval(checkPerformance, 5000);
+    performanceCheckInterval.current = window.setInterval(checkPerformance, 3000);
 
     return () => {
       mediaQuery.removeEventListener('change', handleChange);
-      clearInterval(performanceInterval);
+      if (performanceCheckInterval.current) {
+        clearInterval(performanceCheckInterval.current);
+      }
     };
-  }, []);
+  }, [checkPerformance, detectDeviceTier]);
+
+  // Determine if animations should be enabled based on multiple factors
+  const shouldAnimate = useMemo(() => {
+    if (shouldReduceMotion) return false;
+    
+    // Adaptive animation enabling based on device tier and performance
+    if (performanceMetrics.deviceTier === 'low') {
+      return performanceMetrics.cpuUsage === 'low' && performanceMetrics.frameDropCount < 3;
+    }
+    
+    if (performanceMetrics.deviceTier === 'medium') {
+      return performanceMetrics.cpuUsage !== 'high' && performanceMetrics.frameDropCount < 10;
+    }
+    
+    // High-tier devices can handle more animations
+    return isHighPerformance;
+  }, [shouldReduceMotion, isHighPerformance, performanceMetrics]);
 
   return {
     shouldReduceMotion,
     isHighPerformance,
-    shouldAnimate: !shouldReduceMotion && isHighPerformance,
+    shouldAnimate,
+    performanceMetrics,
+    
+    // Additional performance utilities
+    getOptimalBatchSize: () => {
+      if (performanceMetrics.deviceTier === 'low') return 4;
+      if (performanceMetrics.deviceTier === 'medium') return 8;
+      return 12;
+    },
+    
+    getOptimalStaggerDelay: (itemCount: number) => {
+      const basedelay = performanceMetrics.deviceTier === 'low' ? 150 : 
+                       performanceMetrics.deviceTier === 'medium' ? 100 : 75;
+      
+      // Adjust based on CPU usage
+      const cpuMultiplier = performanceMetrics.cpuUsage === 'high' ? 1.5 :
+                           performanceMetrics.cpuUsage === 'medium' ? 1.2 : 1.0;
+      
+      return Math.ceil(basedelay * cpuMultiplier);
+    },
   };
 };

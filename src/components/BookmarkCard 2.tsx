@@ -4,18 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAnimationPerformance } from "@/hooks/useIntersectionObserver";
 import { useZoomPerformance } from "@/hooks/useZoomPerformance";
-import { useState, useMemo, useCallback, memo, useRef, useEffect } from "react";
-
-/**
- * Utility function to measure performance of expensive operations
- */
-const measurePerformance = <T,>(label: string, fn: () => T): T => {
-  const start = performance.now();
-  const result = fn();
-  const end = performance.now();
-  console.log(`${label}: ${(end - start).toFixed(2)}ms`);
-  return result;
-};
+import { useState, useMemo } from "react";
 
 interface Bookmark {
   id: string;
@@ -39,103 +28,31 @@ interface BookmarkCardProps {
   animationDelay?: number;
   showStatusBadges?: boolean;
   onStatusChange?: (id: string, status: 'favorite' | 'read', value: boolean) => void;
-  enablePerformanceMonitoring?: boolean;
 }
 
-/**
- * BookmarkCard component optimized for performance with React.memo, useCallback, and useMemo.
- * 
- * Performance optimizations:
- * - React.memo with custom comparison function prevents unnecessary re-renders
- * - useMemo for expensive calculations (domain parsing, date formatting, tag processing)
- * - useCallback for event handlers to prevent child component re-renders
- * - Memoized animation styles and visible tags computation
- * - Optional performance monitoring for render tracking
- * 
- * Benefits:
- * - Prevents re-renders when parent component updates but props haven't changed
- * - Reduces expensive URL parsing and date formatting on every render
- * - Stable function references prevent unnecessary child component updates
- * - Optimized tag processing avoids array slicing on every render
- */
-const BookmarkCardComponent = ({ 
+export const BookmarkCard = ({ 
   bookmark, 
   viewMode, 
   animationDelay = 0,
   showStatusBadges = true,
-  onStatusChange,
-  enablePerformanceMonitoring = false
+  onStatusChange 
 }: BookmarkCardProps) => {
   const { shouldAnimate } = useAnimationPerformance();
   const { isZooming, shouldReduceAnimations } = useZoomPerformance();
   const [localFavorite, setLocalFavorite] = useState(bookmark.isFavorite || false);
   const [localRead, setLocalRead] = useState(bookmark.isRead || false);
-  
-  // Performance monitoring (optional)
-  const renderCountRef = useRef(0);
-  const lastRenderTime = useRef(performance.now());
-  
-  useEffect(() => {
-    if (enablePerformanceMonitoring) {
-      renderCountRef.current += 1;
-      const currentTime = performance.now();
-      const timeSinceLastRender = currentTime - lastRenderTime.current;
-      
-      if (renderCountRef.current > 1) {
-        console.log(`BookmarkCard ${bookmark.id} - Render #${renderCountRef.current} (${timeSinceLastRender.toFixed(2)}ms since last)`);
-      }
-      
-      lastRenderTime.current = currentTime;
-    }
-  });
+  const [isHovered, setIsHovered] = useState(false);
   
   // Determine if animations should be active based on zoom state and performance
   const effectiveShouldAnimate = useMemo(() => {
     return shouldAnimate && !isZooming && !shouldReduceAnimations;
   }, [shouldAnimate, isZooming, shouldReduceAnimations]);
   
-  // Memoized expensive calculations
-  const domain = useMemo(() => {
-    if (bookmark.domain) return bookmark.domain;
-    try {
-      return new URL(bookmark.url).hostname.replace('www.', '');
-    } catch {
-      return 'Unknown';
-    }
-  }, [bookmark.domain, bookmark.url]);
-  
-  const readingTimeText = useMemo(() => {
-    return bookmark.readingTime ? `${bookmark.readingTime} min read` : null;
-  }, [bookmark.readingTime]);
-
-  const formattedDate = useMemo(() => {
-    return bookmark.createdAt.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: bookmark.createdAt.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
-    });
-  }, [bookmark.createdAt]);
-
-  const animationStyle = useMemo(() => {
-    return effectiveShouldAnimate && animationDelay > 0 ? {
-      animationDelay: `${animationDelay}ms`,
-    } : {};
-  }, [effectiveShouldAnimate, animationDelay]);
-
-  const visibleTags = useMemo(() => {
-    const maxTags = viewMode === 'list' ? 2 : 3;
-    return {
-      shown: bookmark.tags.slice(0, maxTags),
-      remaining: Math.max(0, bookmark.tags.length - maxTags)
-    };
-  }, [bookmark.tags, viewMode]);
-  
-  // Memoized event handlers
-  const handleOpen = useCallback(() => {
+  const handleOpen = () => {
     window.open(bookmark.url, "_blank");
-  }, [bookmark.url]);
+  };
 
-  const handleStatusToggle = useCallback((status: 'favorite' | 'read') => {
+  const handleStatusToggle = (status: 'favorite' | 'read') => {
     if (status === 'favorite') {
       const newValue = !localFavorite;
       setLocalFavorite(newValue);
@@ -145,28 +62,25 @@ const BookmarkCardComponent = ({
       setLocalRead(newValue);
       onStatusChange?.(bookmark.id, 'read', newValue);
     }
-  }, [bookmark.id, localFavorite, localRead, onStatusChange]);
+  };
 
-  const handleFavoriteToggle = useCallback(() => {
-    handleStatusToggle('favorite');
-  }, [handleStatusToggle]);
-
-  const handleReadToggle = useCallback(() => {
-    handleStatusToggle('read');
-  }, [handleStatusToggle]);
-
-  const handleImageError = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
-    const target = e.currentTarget;
-    const fallbackUrl = viewMode === 'list' 
-      ? "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=56&h=56&fit=crop"
-      : "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=400&h=200&fit=crop";
-    target.src = fallbackUrl;
-  }, [viewMode]);
+  // Extract domain from URL for better display
+  const domain = bookmark.domain || new URL(bookmark.url).hostname.replace('www.', '');
+  
+  // Format reading time
+  const readingTimeText = bookmark.readingTime ? `${bookmark.readingTime} min read` : null;
 
   if (viewMode === "list") {
     return (
       <div 
-        className="glass-card p-3 sm:p-4 group"
+        className={`glass-card-enhanced p-3 sm:p-4 group ${effectiveShouldAnimate ? 'transition-glass' : ''}`}
+        onMouseEnter={() => effectiveShouldAnimate && setIsHovered(true)}
+        onMouseLeave={() => effectiveShouldAnimate && setIsHovered(false)}
+        style={effectiveShouldAnimate && isHovered ? { 
+          transform: 'translateY(-4px)', 
+          boxShadow: 'var(--shadow-glass-lg)',
+          willChange: 'transform, box-shadow'
+        } : { willChange: 'auto' }}
       >
         <div className="flex items-start gap-3 sm:gap-4">
           {/* Compact thumbnail */}
@@ -175,8 +89,22 @@ const BookmarkCardComponent = ({
               <img
                 src={bookmark.thumbnail}
                 alt={bookmark.title}
-                className="w-12 h-12 sm:w-14 sm:h-14 object-cover transition-scale"
-                onError={handleImageError}
+                className="w-12 h-12 sm:w-14 sm:h-14 object-cover"
+                style={effectiveShouldAnimate && isHovered ? { 
+                  transform: 'scale(1.05)', 
+                  transition: 'transform 0.2s ease-out' 
+                } : {}}
+                onError={(e) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=56&h=56&fit=crop";
+                }}
+              />
+              {/* Subtle overlay on hover */}
+              <div 
+                className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"
+                style={effectiveShouldAnimate && isHovered ? { 
+                  opacity: 1, 
+                  transition: 'opacity 0.3s ease-out' 
+                } : { opacity: 0 }}
               />
             </div>
           </div>
@@ -186,7 +114,11 @@ const BookmarkCardComponent = ({
             <div className="flex items-start justify-between gap-3 mb-2">
               <div className="flex-1 min-w-0">
                 <h3 
-                  className="font-semibold text-sm sm:text-base text-foreground cursor-pointer line-clamp-1 leading-tight mb-1 hover:text-primary transition-colors" 
+                  className="font-semibold text-sm sm:text-base text-foreground cursor-pointer line-clamp-1 leading-tight mb-1" 
+                  style={effectiveShouldAnimate && isHovered ? { 
+                    color: 'hsl(var(--primary))', 
+                    transition: 'color 0.2s ease-out' 
+                  } : {}}
                   onClick={handleOpen}
                 >
                   {bookmark.title}
@@ -202,7 +134,12 @@ const BookmarkCardComponent = ({
                   variant="glass-secondary" 
                   size="icon" 
                   onClick={handleOpen} 
-                  className="h-7 w-7 shadow-glass-sm hover:shadow-glass-md transition-shadow"
+                  className="h-7 w-7 shadow-glass-sm"
+                  style={effectiveShouldAnimate && isHovered ? { 
+                    transform: 'scale(1.05)', 
+                    boxShadow: 'var(--shadow-glass-md)',
+                    transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out' 
+                  } : {}}
                 >
                   <ExternalLink className="h-3.5 w-3.5" />
                 </Button>
@@ -211,17 +148,22 @@ const BookmarkCardComponent = ({
                     <Button 
                       variant="glass-secondary" 
                       size="icon" 
-                      className="h-7 w-7 shadow-glass-sm hover:shadow-glass-md transition-shadow"
+                      className="h-7 w-7 shadow-glass-sm"
+                      style={effectiveShouldAnimate && isHovered ? { 
+                        transform: 'scale(1.05)', 
+                        boxShadow: 'var(--shadow-glass-md)',
+                        transition: 'transform 0.2s ease-out, box-shadow 0.2s ease-out' 
+                      } : {}}
                     >
                       <MoreVertical className="h-3.5 w-3.5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="glass-card-tertiary">
-                    <DropdownMenuItem onClick={handleFavoriteToggle}>
+                  <DropdownMenuContent align="end" className="glass-card-enhanced">
+                    <DropdownMenuItem onClick={() => handleStatusToggle('favorite')}>
                       <Heart className="w-4 h-4 mr-2" />
                       {localFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={handleReadToggle}>
+                    <DropdownMenuItem onClick={() => handleStatusToggle('read')}>
                       <BookOpen className="w-4 h-4 mr-2" />
                       {localRead ? 'Mark as Unread' : 'Mark as Read'}
                     </DropdownMenuItem>
@@ -253,7 +195,11 @@ const BookmarkCardComponent = ({
                 
                 <span className="text-muted-foreground/60">•</span>
                 <span className="text-muted-foreground font-medium flex-shrink-0">
-                  {formattedDate}
+                  {bookmark.createdAt.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric',
+                    year: bookmark.createdAt.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+                  })}
                 </span>
               </div>
 
@@ -281,7 +227,7 @@ const BookmarkCardComponent = ({
               {/* Tags */}
               {bookmark.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 min-w-0 flex-1">
-                  {visibleTags.shown.map((tag) => (
+                  {bookmark.tags.slice(0, 2).map((tag) => (
                     <Badge 
                       key={tag} 
                       variant="secondary" 
@@ -291,12 +237,12 @@ const BookmarkCardComponent = ({
                       {tag}
                     </Badge>
                   ))}
-                  {visibleTags.remaining > 0 && (
+                  {bookmark.tags.length > 2 && (
                     <Badge 
                       variant="secondary" 
                       className="text-xs px-2 py-0.5 bg-gradient-glass-tertiary border-white/30 opacity-75 font-medium"
                     >
-                      +{visibleTags.remaining}
+                      +{bookmark.tags.length - 2}
                     </Badge>
                   )}
                 </div>
@@ -314,24 +260,51 @@ const BookmarkCardComponent = ({
     );
   }
 
+  // Apply staggered animation styles
+  const animationStyle = shouldAnimate && animationDelay > 0 ? {
+    animationDelay: `${animationDelay}ms`,
+  } : {};
+
   return (
     <div 
       className={`glass-card-enhanced group overflow-hidden relative ${
-        effectiveShouldAnimate ? 'animate-fade-in-up' : ''
+        effectiveShouldAnimate ? 'animate-fade-in-up transition-glass no-hover-transform' : ''
       }`}
-      style={animationStyle}
+      style={{
+        ...animationStyle,
+        ...(effectiveShouldAnimate && isHovered ? { 
+          transform: 'translateY(-8px) scale(1.02)', 
+          boxShadow: 'var(--shadow-glass-xl)',
+          willChange: 'transform, box-shadow'
+        } : { willChange: 'auto' })
+      }}
+      onMouseEnter={() => effectiveShouldAnimate && setIsHovered(true)}
+      onMouseLeave={() => effectiveShouldAnimate && setIsHovered(false)}
     >
       {/* Enhanced image section with improved gradient overlay */}
       <div className="aspect-video relative overflow-hidden">
         <img
           src={bookmark.thumbnail}
           alt={bookmark.title}
-          className="w-full h-full object-cover transition-scale group-hover:scale-105"
-          onError={handleImageError}
+          className="w-full h-full object-cover"
+          style={effectiveShouldAnimate && isHovered ? { 
+            transform: 'scale(1.1)', 
+            transition: 'transform 0.5s ease-out',
+            willChange: 'transform'
+          } : { willChange: 'auto' }}
+          onError={(e) => {
+            e.currentTarget.src = "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=400&h=200&fit=crop";
+          }}
         />
         
         {/* Enhanced gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-fade" />
+        <div 
+          className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"
+          style={effectiveShouldAnimate && isHovered ? { 
+            opacity: 1, 
+            transition: 'opacity 0.3s ease-out' 
+          } : { opacity: 0 }}
+        />
         
         {/* Floating status badges */}
         {showStatusBadges && (
@@ -352,19 +325,25 @@ const BookmarkCardComponent = ({
         )}
         
         {/* Enhanced dropdown menu with consistent glassmorphic styling */}
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-fade">
+        <div 
+          className="absolute top-2 right-2"
+          style={effectiveShouldAnimate ? {
+            opacity: isHovered ? 1 : 0,
+            transition: 'opacity 0.3s ease-out'
+          } : { opacity: 1 }}
+        >
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <div className="glass-card-tertiary p-2 rounded-lg shadow-glass-sm cursor-pointer">
                 <MoreVertical className="h-4 w-4 text-foreground/70" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="glass-card-tertiary">
-              <DropdownMenuItem onClick={handleFavoriteToggle}>
+            <DropdownMenuContent align="end" className="glass-card-enhanced">
+              <DropdownMenuItem onClick={() => handleStatusToggle('favorite')}>
                 <Heart className="w-4 h-4 mr-2" />
                 {localFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleReadToggle}>
+              <DropdownMenuItem onClick={() => handleStatusToggle('read')}>
                 <BookOpen className="w-4 h-4 mr-2" />
                 {localRead ? 'Mark as Unread' : 'Mark as Read'}
               </DropdownMenuItem>
@@ -380,7 +359,11 @@ const BookmarkCardComponent = ({
       <div className="p-4">
         <div className="flex items-start justify-between mb-3">
           <h3 
-            className="font-semibold text-base text-foreground cursor-pointer line-clamp-2 flex-1 hover:text-primary transition-colors" 
+            className="font-semibold text-base text-foreground cursor-pointer line-clamp-2 flex-1" 
+            style={effectiveShouldAnimate && isHovered ? { 
+              color: 'hsl(var(--primary))', 
+              transition: 'color 0.2s ease-out' 
+            } : {}}
             onClick={handleOpen}
           >
             {bookmark.title}
@@ -389,7 +372,7 @@ const BookmarkCardComponent = ({
             variant="glass-secondary" 
             size="icon" 
             onClick={handleOpen} 
-            className="h-8 w-8 flex-shrink-0 ml-2 shadow-glass-sm hover:shadow-glass-md transition-shadow"
+            className="h-8 w-8 flex-shrink-0 ml-2 shadow-glass-sm hover:shadow-glass-md"
           >
             <ExternalLink className="h-4 w-4" />
           </Button>
@@ -417,7 +400,7 @@ const BookmarkCardComponent = ({
         {/* Enhanced tags section */}
         {bookmark.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-3">
-            {visibleTags.shown.map((tag) => (
+            {bookmark.tags.slice(0, 3).map((tag) => (
               <Badge 
                 key={tag} 
                 variant="secondary" 
@@ -426,12 +409,12 @@ const BookmarkCardComponent = ({
                 {tag}
               </Badge>
             ))}
-            {visibleTags.remaining > 0 && (
+            {bookmark.tags.length > 3 && (
               <Badge 
                 variant="secondary" 
                 className="text-xs bg-gradient-glass-tertiary border-white/20 opacity-75"
               >
-                +{visibleTags.remaining}
+                +{bookmark.tags.length - 3}
               </Badge>
             )}
           </div>
@@ -443,50 +426,14 @@ const BookmarkCardComponent = ({
             <span className="font-medium text-foreground/70">{bookmark.collection}</span>
           </div>
           <span className="text-muted-foreground">
-            {formattedDate}
+            {bookmark.createdAt.toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric',
+              year: bookmark.createdAt.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined
+            })}
           </span>
         </div>
       </div>
     </div>
   );
 };
-
-// Custom comparison function for React.memo
-const areBookmarkPropsEqual = (prevProps: BookmarkCardProps, nextProps: BookmarkCardProps) => {
-  // Check if the bookmark object has changed (deep comparison of relevant fields)
-  const prevBookmark = prevProps.bookmark;
-  const nextBookmark = nextProps.bookmark;
-  
-  if (prevBookmark.id !== nextBookmark.id) return false;
-  if (prevBookmark.title !== nextBookmark.title) return false;
-  if (prevBookmark.description !== nextBookmark.description) return false;
-  if (prevBookmark.url !== nextBookmark.url) return false;
-  if (prevBookmark.thumbnail !== nextBookmark.thumbnail) return false;
-  if (prevBookmark.favicon !== nextBookmark.favicon) return false;
-  if (prevBookmark.collection !== nextBookmark.collection) return false;
-  if (prevBookmark.isFavorite !== nextBookmark.isFavorite) return false;
-  if (prevBookmark.isRead !== nextBookmark.isRead) return false;
-  if (prevBookmark.readingTime !== nextBookmark.readingTime) return false;
-  if (prevBookmark.domain !== nextBookmark.domain) return false;
-  if (prevBookmark.createdAt?.getTime() !== nextBookmark.createdAt?.getTime()) return false;
-  
-  // Check if tags array has changed
-  if (prevBookmark.tags.length !== nextBookmark.tags.length) return false;
-  for (let i = 0; i < prevBookmark.tags.length; i++) {
-    if (prevBookmark.tags[i] !== nextBookmark.tags[i]) return false;
-  }
-  
-  // Check other props
-  if (prevProps.viewMode !== nextProps.viewMode) return false;
-  if (prevProps.animationDelay !== nextProps.animationDelay) return false;
-  if (prevProps.showStatusBadges !== nextProps.showStatusBadges) return false;
-  if (prevProps.enablePerformanceMonitoring !== nextProps.enablePerformanceMonitoring) return false;
-  
-  // onStatusChange comparison (function reference)
-  if (prevProps.onStatusChange !== nextProps.onStatusChange) return false;
-  
-  return true;
-};
-
-// Export the memoized component
-export const BookmarkCard = memo(BookmarkCardComponent, areBookmarkPropsEqual);

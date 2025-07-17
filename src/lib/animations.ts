@@ -181,17 +181,55 @@ export const animationPerformance = {
   },
 
   /**
-   * Throttle animation updates
+   * Throttle animation updates with adaptive timing
    */
   throttleAnimation: (callback: () => void, delay: number = 16): (() => void) => {
     let lastCall = 0;
+    let rafId: number | null = null;
+    
     return () => {
       const now = Date.now();
       if (now - lastCall >= delay) {
         lastCall = now;
-        callback();
+        
+        // Cancel any pending frame if we're calling too frequently
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
+        
+        rafId = requestAnimationFrame(() => {
+          callback();
+          rafId = null;
+        });
       }
     };
+  },
+
+  /**
+   * Debounce animation updates for better performance
+   */
+  debounceAnimation: (callback: () => void, delay: number = 100): (() => void) => {
+    let timeoutId: number | null = null;
+    
+    return () => {
+      if (timeoutId !== null) {
+        clearTimeout(timeoutId);
+      }
+      
+      timeoutId = window.setTimeout(() => {
+        callback();
+        timeoutId = null;
+      }, delay);
+    };
+  },
+
+  /**
+   * Batch multiple animation updates into a single frame
+   */
+  batchAnimations: (callbacks: (() => void)[]): void => {
+    requestAnimationFrame(() => {
+      callbacks.forEach(callback => callback());
+    });
   },
 
   /**
@@ -205,5 +243,78 @@ export const animationPerformance = {
       rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
       rect.right <= (window.innerWidth || document.documentElement.clientWidth)
     );
+  },
+
+  /**
+   * Check if element is near viewport (for preloading animations)
+   */
+  isNearViewport: (element: Element, margin: number = 100): boolean => {
+    const rect = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+    const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+    
+    return (
+      rect.top >= -margin &&
+      rect.left >= -margin &&
+      rect.bottom <= viewportHeight + margin &&
+      rect.right <= viewportWidth + margin
+    );
+  },
+
+  /**
+   * Measure animation performance
+   */
+  measureAnimationPerformance: (animationCallback: () => void): {
+    duration: number;
+    frameCount: number;
+    averageFrameTime: number;
+  } => {
+    const startTime = performance.now();
+    let frameCount = 0;
+    let totalFrameTime = 0;
+    
+    const originalRaf = window.requestAnimationFrame;
+    window.requestAnimationFrame = (callback) => {
+      const frameStart = performance.now();
+      return originalRaf(() => {
+        const frameTime = performance.now() - frameStart;
+        totalFrameTime += frameTime;
+        frameCount++;
+        callback();
+      });
+    };
+    
+    animationCallback();
+    
+    // Restore original RAF
+    window.requestAnimationFrame = originalRaf;
+    
+    const duration = performance.now() - startTime;
+    const averageFrameTime = frameCount > 0 ? totalFrameTime / frameCount : 0;
+    
+    return {
+      duration,
+      frameCount,
+      averageFrameTime,
+    };
+  },
+
+  /**
+   * Optimize animation timing based on device capabilities
+   */
+  getOptimalAnimationTiming: (baseDelay: number, itemCount: number): number => {
+    const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+    const deviceMemory = (navigator as { deviceMemory?: number }).deviceMemory || 4;
+    
+    // Base multiplier on hardware
+    let multiplier = 1;
+    if (hardwareConcurrency < 4) multiplier *= 1.5;
+    if (deviceMemory < 4) multiplier *= 1.3;
+    
+    // Adjust for large item counts
+    if (itemCount > 50) multiplier *= 1.2;
+    if (itemCount > 100) multiplier *= 1.4;
+    
+    return Math.ceil(baseDelay * multiplier);
   },
 };

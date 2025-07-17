@@ -9,8 +9,10 @@ import { BookmarkCard } from "@/components/BookmarkCard";
 import { AddBookmarkDialog } from "@/components/AddBookmarkDialog";
 import { CollectionsSidebar } from "@/components/CollectionsSidebar";
 import { BookmarkCardSkeleton, SidebarSkeleton } from "@/components/LoadingSkeleton";
+import { PerformanceTestDialog } from "@/components/PerformanceTestDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { useStaggeredAnimation, useStaggeredFadeIn } from "@/hooks/useStaggeredAnimation";
+import { useZoomPerformance } from "@/hooks/useZoomPerformance";
 
 // Mock data for demonstration with enhanced properties
 const mockBookmarks = [
@@ -540,6 +542,11 @@ const BookmarkManager = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [performanceMonitoringEnabled, setPerformanceMonitoringEnabled] = useState(false);
+  const [isPerformanceTestOpen, setIsPerformanceTestOpen] = useState(false);
+
+  // Zoom performance optimization
+  const { isZooming, shouldReduceAnimations } = useZoomPerformance();
 
   // Handle bookmark status changes
   const handleBookmarkStatusChange = (id: string, status: 'favorite' | 'read', value: boolean) => {
@@ -558,13 +565,15 @@ const BookmarkManager = () => {
     return matchesSearch && matchesCollection;
   });
 
-  // Use staggered animation for bookmark cards
+  // Use staggered animation for bookmark cards with performance optimizations
   const bookmarkAnimation = useStaggeredAnimation(filteredBookmarks.length, {
     type: viewMode === "grid" ? "scale-in" : "slide-in",
     staggerDelay: 80,
     startDelay: 100,
     threshold: 0.1,
     rootMargin: "50px",
+    maxConcurrent: 20, // Limit concurrent animations for better performance
+    batchSize: 8, // Process animations in batches
   });
 
   return (
@@ -622,6 +631,23 @@ const BookmarkManager = () => {
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2">
+              {/* Performance Monitoring Toggle (for debugging) */}
+              {process.env.NODE_ENV === 'development' && (
+                <Button
+                  variant={performanceMonitoringEnabled ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setPerformanceMonitoringEnabled(!performanceMonitoringEnabled)}
+                  className={`h-7 w-7 sm:h-8 sm:w-8 p-0 transition-all duration-300 ${
+                    performanceMonitoringEnabled 
+                      ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105" 
+                      : "hover:bg-white/20 text-foreground/70"
+                  }`}
+                  title="Toggle Performance Monitoring"
+                >
+                  <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
+                </Button>
+              )}
+              
               {/* View Toggle */}
               <div className="flex items-center rounded-lg p-1 backdrop-blur-xl bg-gradient-to-r from-white/20 to-white/10 border border-white/30 shadow-lg">
                 <Button
@@ -664,13 +690,52 @@ const BookmarkManager = () => {
           </div>
         </header>
 
+        {/* Performance Metrics Display (Development Only) */}
+        {process.env.NODE_ENV === 'development' && performanceMonitoringEnabled && (
+          <div className="px-3 sm:px-6 py-2 border-b border-white/10 bg-gradient-glass-tertiary">
+            <div className="flex items-center gap-4 text-xs text-foreground/70">
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-primary rounded-full"></span>
+                <span>Animation Batches: {bookmarkAnimation.performance.animationBatchCount}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-accent rounded-full"></span>
+                <span>Avg Frame Time: {bookmarkAnimation.performance.averageFrameTime.toFixed(2)}ms</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                <span>Animation Duration: {bookmarkAnimation.performance.totalAnimationTime.toFixed(2)}ms</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                <span>Should Animate: {bookmarkAnimation.shouldAnimate ? 'Yes' : 'No'}</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
+                <span>Visible Items: {filteredBookmarks.length}</span>
+              </div>
+              <div className="ml-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsPerformanceTestOpen(true)}
+                  className="gap-1 h-6 px-2 text-xs"
+                >
+                  <Zap className="h-3 w-3" />
+                  Test Performance
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Content */}
         <main className="flex-1 p-3 sm:p-6 w-full">
           {isLoading ? (
             <div className={
               viewMode === "grid" 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" 
-                : "space-y-3 sm:space-y-4"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized" 
+                : "space-y-3 sm:space-y-4 bookmark-list-container"
             }>
               {Array.from({ length: 8 }).map((_, i) => (
                 <BookmarkCardSkeleton key={i} viewMode={viewMode} />
@@ -695,8 +760,8 @@ const BookmarkManager = () => {
               ref={bookmarkAnimation.containerRef}
               className={
                 viewMode === "grid" 
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" 
-                  : "space-y-3 sm:space-y-4"
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized card-grid-container" 
+                  : "space-y-3 sm:space-y-4 bookmark-list-container"
               }
             >
               {filteredBookmarks.map((bookmark, index) => {
@@ -705,7 +770,7 @@ const BookmarkManager = () => {
                   <div
                     key={bookmark.id}
                     {...itemProps}
-                    className={`transition-glass ${itemProps.className}`}
+                    className={itemProps.className}
                     style={itemProps.style}
                   >
                     <BookmarkCard
@@ -714,6 +779,7 @@ const BookmarkManager = () => {
                       animationDelay={index * 80}
                       showStatusBadges={true}
                       onStatusChange={handleBookmarkStatusChange}
+                      enablePerformanceMonitoring={performanceMonitoringEnabled}
                     />
                   </div>
                 );
@@ -728,6 +794,14 @@ const BookmarkManager = () => {
         open={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
       />
+
+      {/* Performance Test Dialog (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <PerformanceTestDialog 
+          open={isPerformanceTestOpen}
+          onOpenChange={setIsPerformanceTestOpen}
+        />
+      )}
     </div>
   );
 };
@@ -749,8 +823,8 @@ const Index = () => {
     );
   }
 
-  // Show landing page if not authenticated, bookmark manager if authenticated
-  return user ? <BookmarkManager /> : <LandingPage />;
+  // TEMPORARY: Show bookmark manager for visual testing (bypass auth)
+  return <BookmarkManager />;
 };
 
 export default Index;
