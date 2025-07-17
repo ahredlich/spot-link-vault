@@ -76,10 +76,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       
       // Force page reload for clean state
       window.location.href = '/auth';
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error signing out",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
       

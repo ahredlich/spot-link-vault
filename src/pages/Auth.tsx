@@ -98,10 +98,10 @@ const Auth = () => {
       setEmail('');
       setPassword('');
       setFullName('');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Sign up failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -156,10 +156,10 @@ const Auth = () => {
         // Force page reload for clean state
         window.location.href = '/';
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Sign in failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {
@@ -192,10 +192,10 @@ const Auth = () => {
         description: "We've sent you a password reset link.",
       });
       setShowForgotPassword(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Reset failed",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unexpected error occurred",
         variant: "destructive",
       });
     } finally {

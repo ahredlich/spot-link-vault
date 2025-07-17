@@ -73,15 +73,25 @@ All colors MUST be HSL.
     --gradient-border-secondary: linear-gradient(135deg, hsl(240 20% 85% / 0.5), hsl(240 20% 80% / 0.3));
     --gradient-accent: linear-gradient(135deg, hsl(220 100% 60% / 0.1), hsl(280 60% 65% / 0.1));
     
-    /* Enhanced animation variables */
-    --transition-glass: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-scale: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-fade: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-slide: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Enhanced animation variables - optimized for performance */
+    --transition-glass: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glass-hover: transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-scale: transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-fade: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slide: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-shadow: box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-performance: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
     
-    /* Shimmer effect */
+    /* Optimized animation timing */
+    --animation-duration-fast: 0.12s;
+    --animation-duration-normal: 0.22s;
+    --animation-duration-slow: 0.35s;
+    --animation-stagger-base: 70ms;
+    
+    /* Shimmer effect - enhanced performance */
     --shimmer-gradient: linear-gradient(90deg, transparent, hsl(240 20% 100% / 0.4), transparent);
-    --shimmer-duration: 2s;
+    --shimmer-duration: 1.5s;
+    --shimmer-gradient-subtle: linear-gradient(90deg, transparent, hsl(240 20% 100% / 0.2), transparent);
     
     /* Enhanced easing functions */
     --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
@@ -165,52 +175,90 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Enhanced Glassmorphic card styles with zoom performance optimizations */
+  /*
+   * Enhanced Glassmorphic card styles with advanced GPU acceleration and containment optimizations
+   * 
+   * Performance Features:
+   * - CSS Containment: Limits layout, style, and paint calculations to specific elements
+   * - Content Visibility: Enables viewport culling for off-screen elements
+   * - GPU Acceleration: Forces hardware acceleration for smooth transforms and animations
+   * - Isolation: Creates new stacking contexts to prevent unnecessary repaints
+   * - Backface Visibility: Optimizes 3D transforms and prevents rendering artifacts
+   */
   .glass-card {
     @apply backdrop-blur-md border border-glass-border/50 shadow-lg;
     background: var(--gradient-glass-primary);
     transition: var(--transition-glass);
-    /* Zoom performance optimizations */
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
     transform-style: preserve-3d;
     backface-visibility: hidden;
     perspective: 1000px;
+    /* Advanced containment and performance optimizations */
+    contain: layout style paint;
+    content-visibility: auto;
+    isolation: isolate;
   }
   
-  .glass-card:hover:not([role="dialog"]) {
-    @apply shadow-xl;
+  .glass-card:hover:not([role="dialog"]):not(.no-hover-transform) {
     box-shadow: var(--shadow-glass-hover);
-    transform: translateY(-2px);
+    transform: translateY(-2px) translateZ(0);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
 
   .glass-card-enhanced {
-    @apply backdrop-blur-xl border;
+    @apply backdrop-blur-lg border;
     background: var(--gradient-glass-primary);
     border-image: var(--gradient-border-primary) 1;
     box-shadow: var(--shadow-glass-md);
     border-radius: 16px;
     transition: var(--transition-glass);
-    /* Zoom performance optimizations */
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
     transform-style: preserve-3d;
     backface-visibility: hidden;
     perspective: 1000px;
+    /* Advanced containment and performance optimizations */
     contain: layout style paint;
-    will-change: auto;
+    content-visibility: auto;
+    isolation: isolate;
+  }
+
+  .glass-card-enhanced:hover:not(.no-hover-transform) {
+    box-shadow: var(--shadow-glass-lg);
+    transform: translateY(-1px) translateZ(0);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
 
   /* Remove automatic hover transforms that conflict with zoom gestures */
   .glass-card-enhanced.no-hover-transform:hover {
     box-shadow: var(--shadow-glass-lg);
+    transform: translateZ(0);
+    transition: var(--transition-shadow);
   }
 
   .glass-card-secondary {
-    @apply backdrop-blur-lg border;
+    @apply backdrop-blur-md border;
     background: var(--gradient-glass-secondary);
     border-image: var(--gradient-border-secondary) 1;
     box-shadow: var(--shadow-glass-sm);
     transition: var(--transition-glass);
-    /* Zoom performance optimizations */
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment and performance optimizations */
     contain: layout style paint;
-    will-change: auto;
+    content-visibility: auto;
+    isolation: isolate;
+  }
+
+  .glass-card-secondary:hover {
+    box-shadow: var(--shadow-glass-md);
+    transform: translateY(-1px) translateZ(0);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
 
   .glass-card-tertiary {
@@ -219,9 +267,20 @@ All colors MUST be HSL.
     border-color: hsl(var(--glass-border-secondary) / 0.3);
     box-shadow: var(--shadow-glass-sm);
     transition: var(--transition-glass);
-    /* Zoom performance optimizations */
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment and performance optimizations */
     contain: layout style paint;
-    will-change: auto;
+    content-visibility: auto;
+    isolation: isolate;
+  }
+
+  .glass-card-tertiary:hover {
+    box-shadow: var(--shadow-glass-md);
+    transform: translateY(-1px) translateZ(0);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
   
   /* Enhanced Glass button variants */
@@ -229,12 +288,18 @@ All colors MUST be HSL.
     @apply backdrop-blur-md border border-glass-border/50;
     background: var(--gradient-glass-primary);
     transition: var(--transition-glass);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
   }
   
   .btn-glass:hover {
     background: linear-gradient(135deg, hsl(var(--glass-bg-primary)), hsl(var(--glass-bg-secondary)));
-    transform: translateY(-1px);
+    transform: translateY(-1px) translateZ(0);
     box-shadow: var(--shadow-glass-md);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
 
   .btn-glass-enhanced {
@@ -243,39 +308,246 @@ All colors MUST be HSL.
     border-image: var(--gradient-border-primary) 1;
     box-shadow: var(--shadow-glass-sm);
     transition: var(--transition-glass);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
   }
 
   .btn-glass-enhanced:hover {
     background: linear-gradient(135deg, hsl(var(--glass-bg-primary)), hsl(var(--glass-bg-secondary)));
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-2px) translateZ(0);
     box-shadow: var(--shadow-glass-md);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
   }
 
   .btn-glass-enhanced:focus-visible {
     @apply ring-2 ring-primary ring-offset-2;
     outline: none;
   }
+
+  /* 
+   * Optimized bookmark card hover classes - Enhanced performance and consistency
+   * 
+   * Performance optimizations implemented:
+   * - Consistent transition timing using CSS variables
+   * - GPU acceleration with translateZ(0) and backface-visibility: hidden
+   * - Proper will-change declarations for transform and box-shadow
+   * - CSS containment for layout, style, and paint isolation
+   * - Consistent shadow and transform patterns
+   * - Optimized transform origins for better performance
+   * - Reduced motion support for accessibility
+   */
+  .bookmark-card-hover {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment for bookmark cards */
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .bookmark-card-hover:hover {
+    transform: translateY(-3px) translateZ(0);
+    box-shadow: var(--shadow-glass-lg);
+    will-change: transform;
+  }
+
+  .bookmark-card-hover-subtle {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment for bookmark cards */
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .bookmark-card-hover-subtle:hover {
+    transform: translateY(-1px) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
+
+  .bookmark-card-hover-scale {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment for bookmark cards */
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .bookmark-card-hover-scale:hover {
+    transform: scale(1.002) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
+
+  .bookmark-card-hover-lift-scale {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment for bookmark cards */
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .bookmark-card-hover-lift-scale:hover {
+    transform: translateY(-2px) scale(1.002) translateZ(0);
+    box-shadow: var(--shadow-glass-lg);
+    will-change: transform;
+  }
+
+  /* Optimized bookmark card hover - Best performance variant */
+  .bookmark-card-hover-optimized {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Advanced containment and performance optimizations */
+    contain: layout style paint;
+    isolation: isolate;
+    /* Optimized transform origin for better performance */
+    transform-origin: center center;
+  }
+
+  .bookmark-card-hover-optimized:hover {
+    transform: translateY(-1.5px) scale(1.001) translateZ(0);
+    box-shadow: var(--shadow-glass-lg);
+    will-change: transform;
+  }
+
+  /* ========== NEW PERFORMANCE-OPTIMIZED HOVER CLASSES ========== */
+  
+  /* 1. Glass card performance - minimal effects version */
+  .glass-card-performance {
+    @apply backdrop-blur-sm border border-glass-border/40 shadow-md;
+    background: var(--gradient-glass-primary);
+    transition: var(--transition-performance);
+    /* Minimal GPU acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Lightweight containment */
+    contain: layout paint;
+    isolation: isolate;
+  }
+
+  .glass-card-performance:hover {
+    box-shadow: var(--shadow-glass-md);
+    transform: translateY(-1px) translateZ(0);
+    will-change: transform;
+  }
+
+  /* 2. Hover lift only - simple translateY only */
+  .hover-lift-only {
+    transition: var(--transition-performance);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout paint;
+    isolation: isolate;
+  }
+
+  .hover-lift-only:hover {
+    transform: translateY(-2px) translateZ(0);
+    will-change: transform;
+  }
+
+  /* 3. Reduced motion safe - accessibility-friendly version */
+  .reduced-motion-safe {
+    transition: var(--transition-performance);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout paint;
+    isolation: isolate;
+  }
+
+  .reduced-motion-safe:hover {
+    transform: translateY(-1px) translateZ(0);
+    will-change: transform;
+  }
+
+  /* Disable all animations for reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .reduced-motion-safe,
+    .reduced-motion-safe:hover {
+      transition: none;
+      transform: translateZ(0);
+      will-change: auto;
+    }
+  }
+
+  /* ========== ENHANCED OPTIMIZED GLASS CARD VARIANTS ========== */
+
+  /* Glass card with enhanced performance optimizations */
+  .glass-card-enhanced-performance {
+    @apply backdrop-blur-md border border-glass-border/50 shadow-lg;
+    background: var(--gradient-glass-primary);
+    transition: var(--transition-performance);
+    /* Optimized GPU acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Performance-focused containment */
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .glass-card-enhanced-performance:hover {
+    box-shadow: var(--shadow-glass-lg);
+    transform: translateY(-1px) translateZ(0);
+    will-change: transform;
+  }
+
+  /* Glass card secondary with reduced blur for better performance */
+  .glass-card-secondary-performance {
+    @apply backdrop-blur-sm border border-glass-border/30 shadow-sm;
+    background: var(--gradient-glass-secondary);
+    transition: var(--transition-performance);
+    /* Minimal GPU acceleration */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout paint;
+    isolation: isolate;
+  }
+
+  .glass-card-secondary-performance:hover {
+    box-shadow: var(--shadow-glass-md);
+    transform: translateY(-1px) translateZ(0);
+    will-change: transform;
+  }
   
   /* Enhanced Search glass effect */
   .search-glass {
     @apply backdrop-blur-lg border border-white/20;
     background: var(--gradient-glass-primary);
+    transition: var(--transition-glass);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
   }
 
   .search-glass-enhanced {
-    @apply backdrop-blur-xl border;
+    @apply backdrop-blur-lg border;
     background: var(--gradient-glass-primary);
     border-image: var(--gradient-border-primary) 1;
     box-shadow: var(--shadow-glass-sm);
     transition: var(--transition-glass);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
   }
 
   .search-glass-glow {
-    @apply backdrop-blur-xl border border-white/20;
+    @apply backdrop-blur-lg border border-white/20;
     background: var(--gradient-glass-primary);
     box-shadow: var(--shadow-glass-sm);
     border-radius: 8px;
-    transition: var(--transition-glass);
+    transition: var(--transition-shadow);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
   }
 
   .search-glass-glow:focus-within {
@@ -287,10 +559,16 @@ All colors MUST be HSL.
     outline: none;
   }
 
-  /* Shimmer effect */
+  /* Optimized Shimmer Effect - Enhanced performance with GPU acceleration */
   .shimmer-effect {
     position: relative;
     overflow: hidden;
+    /* GPU acceleration for smooth shimmer */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    /* Containment for better performance */
+    contain: layout paint;
   }
 
   .shimmer-effect::before {
@@ -301,14 +579,31 @@ All colors MUST be HSL.
     width: 100%;
     height: 100%;
     background: var(--shimmer-gradient);
-    animation: shimmer var(--shimmer-duration) infinite;
+    animation: shimmer 1.5s ease-in-out infinite;
     z-index: 1;
+    /* GPU acceleration for pseudo-element */
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
   }
 
   .shimmer-loading {
     @apply shimmer-effect;
     background: var(--gradient-glass-secondary);
     border-radius: var(--radius);
+    /* Additional optimization for loading states */
+    contain: layout style paint;
+  }
+
+  /* Fast shimmer variant for urgent loading states */
+  .shimmer-fast::before {
+    animation-duration: 1s;
+  }
+
+  /* Subtle shimmer for less intrusive loading */
+  .shimmer-subtle::before {
+    background: linear-gradient(90deg, transparent, hsl(240 20% 100% / 0.2), transparent);
+    animation-duration: 2s;
   }
 
   /* Enhanced focus ring utilities that work with glass effects */
@@ -393,129 +688,106 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-glass-xl);
   }
 
-  /* Animation utilities */
+  /* Optimized Animation Utilities - Reduced complexity for better performance */
+  
+  /* Core animations - simplified and optimized */
   .animate-fade-in {
-    animation: fadeIn 0.3s var(--ease-smooth) forwards;
+    animation: fadeIn 0.25s var(--ease-smooth) forwards;
     opacity: 0;
+    /* GPU acceleration for smooth fading */
+    transform: translateZ(0);
+    will-change: opacity;
   }
 
   .animate-slide-in {
-    animation: slideIn 0.4s var(--ease-smooth) forwards;
+    animation: slideIn 0.3s var(--ease-smooth) forwards;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(16px) translateZ(0);
+    will-change: transform, opacity;
   }
 
   .animate-scale-in {
-    animation: scaleIn 0.2s var(--ease-bounce) forwards;
+    animation: scaleIn 0.2s var(--ease-smooth) forwards;
     opacity: 0;
-    transform: scale(0.9);
+    transform: scale(0.95) translateZ(0);
+    will-change: transform, opacity;
   }
 
+  /* Directional slide animations - consolidated */
   .animate-slide-in-left {
-    animation: slideInLeft 0.4s var(--ease-smooth) forwards;
+    animation: slideInLeft 0.3s var(--ease-smooth) forwards;
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-16px) translateZ(0);
+    will-change: transform, opacity;
   }
 
   .animate-slide-in-right {
-    animation: slideInRight 0.4s var(--ease-smooth) forwards;
+    animation: slideInRight 0.3s var(--ease-smooth) forwards;
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(16px) translateZ(0);
+    will-change: transform, opacity;
   }
 
-  .animate-fade-in-up {
-    animation: fadeInUp 0.4s var(--ease-smooth) forwards;
+  /* Simplified staggered animation system - reduced from 10 to 5 classes */
+  .animate-stagger-0 { animation-delay: 0ms; }
+  .animate-stagger-1 { animation-delay: 80ms; }
+  .animate-stagger-2 { animation-delay: 160ms; }
+  .animate-stagger-3 { animation-delay: 240ms; }
+  .animate-stagger-4 { animation-delay: 320ms; }
+
+  /* Speed variants - optimized durations */
+  .animate-fast {
+    animation-duration: 0.15s;
+  }
+
+  .animate-slow {
+    animation-duration: 0.4s;
+  }
+
+  /* Enhanced bounce for special cases only */
+  .animate-bounce-in {
+    animation: bounceIn 0.3s var(--ease-bounce) forwards;
     opacity: 0;
-    transform: translateY(30px);
+    transform: scale(0.9) translateZ(0);
+    will-change: transform, opacity;
   }
 
-  .animate-fade-in-down {
-    animation: fadeInDown 0.4s var(--ease-smooth) forwards;
+  /* Optimized entrance animation utility - best performance */
+  .animate-enter {
+    animation: slideIn var(--animation-duration-normal) var(--ease-smooth) forwards;
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(12px) translateZ(0);
+    will-change: transform, opacity;
+    /* Auto-cleanup will-change after animation */
+    animation-fill-mode: both;
   }
 
-  /* Staggered animation delay classes */
-  .animate-stagger-0 {
-    animation-delay: 0ms;
+  .animate-enter.animate-fast {
+    animation-duration: var(--animation-duration-fast);
+    transform: translateY(8px) translateZ(0);
   }
 
-  .animate-stagger-1 {
-    animation-delay: 100ms;
+  .animate-enter.animate-slow {
+    animation-duration: var(--animation-duration-slow);
+    transform: translateY(16px) translateZ(0);
   }
 
-  .animate-stagger-2 {
-    animation-delay: 200ms;
-  }
-
-  .animate-stagger-3 {
-    animation-delay: 300ms;
-  }
-
-  .animate-stagger-4 {
-    animation-delay: 400ms;
-  }
-
-  .animate-stagger-5 {
-    animation-delay: 500ms;
-  }
-
-  .animate-stagger-6 {
-    animation-delay: 600ms;
-  }
-
-  .animate-stagger-7 {
-    animation-delay: 700ms;
-  }
-
-  .animate-stagger-8 {
-    animation-delay: 800ms;
-  }
-
-  .animate-stagger-9 {
-    animation-delay: 900ms;
-  }
-
-  /* Fast animation variants */
-  .animate-fade-in-fast {
-    animation: fadeIn 0.2s var(--ease-smooth) forwards;
+  /* Optimized card entrance animation */
+  .animate-card-enter {
+    animation: cardEnter var(--animation-duration-normal) var(--ease-smooth) forwards;
     opacity: 0;
-  }
-
-  .animate-slide-in-fast {
-    animation: slideIn 0.25s var(--ease-smooth) forwards;
-    opacity: 0;
-    transform: translateY(15px);
-  }
-
-  /* Slow animation variants */
-  .animate-fade-in-slow {
-    animation: fadeIn 0.5s var(--ease-smooth) forwards;
-    opacity: 0;
-  }
-
-  .animate-slide-in-slow {
-    animation: slideIn 0.6s var(--ease-smooth) forwards;
-    opacity: 0;
-    transform: translateY(25px);
-  }
-
-  /* Bounce variants */
-  .animate-scale-in-bounce {
-    animation: scaleInBounce 0.4s var(--ease-bounce) forwards;
-    opacity: 0;
-    transform: scale(0.8);
-  }
-
-  .animate-fade-in-bounce {
-    animation: fadeInBounce 0.4s var(--ease-bounce) forwards;
-    opacity: 0;
-    transform: scale(0.95);
+    transform: translateY(8px) scale(0.98) translateZ(0);
+    will-change: transform, opacity;
+    animation-fill-mode: both;
   }
 
   /* Transition utilities */
   .transition-glass {
     transition: var(--transition-glass);
+  }
+
+  .transition-glass-hover {
+    transition: var(--transition-glass-hover);
   }
 
   .transition-scale {
@@ -528,6 +800,146 @@ All colors MUST be HSL.
 
   .transition-slide {
     transition: var(--transition-slide);
+  }
+
+  .transition-shadow {
+    transition: var(--transition-shadow);
+  }
+
+  /* GPU acceleration utilities */
+  .gpu-accelerated {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .gpu-accelerated-auto {
+    transform: translateZ(0);
+    will-change: auto;
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  /* Enhanced GPU acceleration with full containment */
+  .gpu-accelerated-full {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    contain: layout style paint;
+    content-visibility: auto;
+    isolation: isolate;
+  }
+
+  /* Performance-optimized viewport culling */
+  .viewport-culled {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 200px;
+  }
+
+  /* Safe content-visibility for cards that need hover effects */
+  .content-visibility-safe {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 120px;
+  }
+
+  .content-visibility-safe:hover,
+  .content-visibility-safe:focus,
+  .content-visibility-safe:focus-within {
+    content-visibility: visible;
+  }
+
+  /* Optimized card container for grids */
+  .card-container-optimized {
+    contain: layout style paint;
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  /* Enhanced scroll performance */
+  .scroll-optimized {
+    contain: layout style paint;
+    transform: translateZ(0);
+    will-change: scroll-position;
+    backface-visibility: hidden;
+  }
+
+  /*
+   * Performance Optimization Utilities
+   * 
+   * These classes provide granular control over rendering performance:
+   * 
+   * Containment Classes:
+   * - .contain-layout: Limits layout calculations to the element
+   * - .contain-style: Limits style calculations to the element
+   * - .contain-paint: Limits paint calculations to the element
+   * - .contain-size: Limits size calculations to the element
+   * - .contain-all: Applies all containment types for maximum isolation
+   * 
+   * Viewport Culling Classes:
+   * - .content-visibility-auto: Enables automatic viewport culling
+   * - .content-visibility-hidden: Hides content from rendering pipeline
+   * - .content-visibility-visible: Forces content to always render
+   * 
+   * GPU Acceleration Classes:
+   * - .gpu-layer: Creates a new GPU layer for hardware acceleration
+   * - .gpu-composite: Optimizes compositing operations
+   * - .gpu-3d-context: Creates 3D rendering context for complex animations
+   */
+
+  /* CSS Containment utilities */
+  .contain-layout { contain: layout; }
+  .contain-style { contain: style; }
+  .contain-paint { contain: paint; }
+  .contain-size { contain: size; }
+  .contain-all { contain: layout style paint size; }
+
+  /* Content visibility utilities */
+  .content-visibility-auto { content-visibility: auto; }
+  .content-visibility-hidden { content-visibility: hidden; }
+  .content-visibility-visible { content-visibility: visible; }
+
+  /* Advanced GPU acceleration utilities */
+  .gpu-layer {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    isolation: isolate;
+    contain: layout style paint;
+  }
+
+  .gpu-composite {
+    transform: translateZ(0);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    isolation: isolate;
+    contain: layout style paint;
+    content-visibility: auto;
+  }
+
+  .gpu-3d-context {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    isolation: isolate;
+    contain: layout style paint;
+  }
+
+  /* Stacking context optimization */
+  .stack-isolated {
+    isolation: isolate;
+    z-index: 0;
+  }
+
+  /* Transform optimization */
+  .transform-gpu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   /* Loading state utilities */
@@ -554,13 +966,14 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* Keyframe animations */
+  /* Optimized Keyframe Animations - GPU accelerated and performance focused */
+  
   @keyframes shimmer {
     0% { 
-      left: -100%; 
+      transform: translateX(-100%); 
     }
     100% { 
-      left: 100%; 
+      transform: translateX(100%); 
     }
   }
 
@@ -576,153 +989,140 @@ All colors MUST be HSL.
   @keyframes slideIn {
     0% { 
       opacity: 0;
-      transform: translateY(20px); 
+      transform: translateY(16px) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: translateY(0); 
+      transform: translateY(0) translateZ(0); 
     }
   }
 
   @keyframes slideInLeft {
     0% { 
       opacity: 0;
-      transform: translateX(-20px); 
+      transform: translateX(-16px) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: translateX(0); 
+      transform: translateX(0) translateZ(0); 
     }
   }
 
   @keyframes slideInRight {
     0% { 
       opacity: 0;
-      transform: translateX(20px); 
+      transform: translateX(16px) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: translateX(0); 
-    }
-  }
-
-  @keyframes fadeInUp {
-    0% { 
-      opacity: 0;
-      transform: translateY(30px); 
-    }
-    100% { 
-      opacity: 1;
-      transform: translateY(0); 
-    }
-  }
-
-  @keyframes fadeInDown {
-    0% { 
-      opacity: 0;
-      transform: translateY(-30px); 
-    }
-    100% { 
-      opacity: 1;
-      transform: translateY(0); 
+      transform: translateX(0) translateZ(0); 
     }
   }
 
   @keyframes scaleIn {
     0% { 
       opacity: 0;
-      transform: scale(0.9); 
+      transform: scale(0.95) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: scale(1); 
+      transform: scale(1) translateZ(0); 
     }
   }
 
-  @keyframes scaleInBounce {
+  @keyframes bounceIn {
     0% { 
       opacity: 0;
-      transform: scale(0.8); 
+      transform: scale(0.9) translateZ(0); 
     }
-    50% { 
-      opacity: 0.8;
-      transform: scale(1.05); 
+    60% { 
+      opacity: 0.9;
+      transform: scale(1.02) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: scale(1); 
+      transform: scale(1) translateZ(0); 
     }
   }
 
-  @keyframes fadeInBounce {
+  @keyframes cardEnter {
     0% { 
       opacity: 0;
-      transform: scale(0.95); 
-    }
-    50% { 
-      opacity: 0.8;
-      transform: scale(1.02); 
+      transform: translateY(8px) scale(0.98) translateZ(0); 
     }
     100% { 
       opacity: 1;
-      transform: scale(1); 
+      transform: translateY(0) scale(1) translateZ(0); 
     }
   }
 
   /* Zoom performance optimizations */
   @media screen {
-    /* Force hardware acceleration for better zoom performance */
-    .glass-card-enhanced,
-    .glass-card,
-    .glass-card-secondary,
-    .glass-card-tertiary {
-      transform: translate3d(0, 0, 0);
-      -webkit-transform: translate3d(0, 0, 0);
-      -webkit-font-smoothing: antialiased;
-      -webkit-backface-visibility: hidden;
-      -moz-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
-    
     /* Optimize zooming behavior specifically */
     .glass-card-enhanced img,
     .glass-card img {
-      transform: translate3d(0, 0, 0);
+      transform: translateZ(0);
       image-rendering: optimizeQuality;
       image-rendering: -webkit-optimize-contrast;
+      /* GPU acceleration for images */
+      backface-visibility: hidden;
+      isolation: isolate;
+    }
+
+    /* Container optimizations for card grids */
+    .card-grid-container {
+      contain: layout style paint;
+      transform: translateZ(0);
+      isolation: isolate;
+    }
+
+    /* Viewport culling for large lists */
+    .bookmark-list-container {
+      content-visibility: auto;
+      contain-intrinsic-size: 0 300px;
     }
   }
 
-  /* Reduced motion support */
+  /* Reduced motion support - respects user accessibility preferences */
   @media (prefers-reduced-motion: reduce) {
-    .shimmer-effect::before {
+    /* Disable shimmer animations */
+    .shimmer-effect::before,
+    .shimmer-fast::before,
+    .shimmer-subtle::before {
       animation: none;
     }
     
+    /* Disable all entrance animations */
     .animate-fade-in,
     .animate-slide-in,
     .animate-scale-in,
     .animate-slide-in-left,
     .animate-slide-in-right,
-    .animate-fade-in-up,
-    .animate-fade-in-down,
-    .animate-fade-in-fast,
-    .animate-slide-in-fast,
-    .animate-fade-in-slow,
-    .animate-slide-in-slow,
-    .animate-scale-in-bounce,
-    .animate-fade-in-bounce {
+    .animate-bounce-in,
+    .animate-enter,
+    .animate-card-enter {
       animation: none;
       opacity: 1;
-      transform: none;
+      transform: translateZ(0);
     }
     
+    /* Disable hover transforms */
     .glass-card-enhanced:hover,
     .btn-glass-enhanced:hover,
-    .glass-card:hover:not([role="dialog"]) {
-      transform: none;
+    .glass-card:hover:not([role="dialog"]):not(.no-hover-transform),
+    .bookmark-card-hover:hover,
+    .bookmark-card-hover-subtle:hover,
+    .bookmark-card-hover-scale:hover,
+    .bookmark-card-hover-lift-scale:hover,
+    .bookmark-card-hover-optimized:hover,
+    .glass-card-performance:hover,
+    .hover-lift-only:hover,
+    .glass-card-enhanced-performance:hover,
+    .glass-card-secondary-performance:hover {
+      transform: translateZ(0);
     }
     
+    /* Significantly reduce all animation durations */
     * {
       transition-duration: 0.01ms !important;
       animation-duration: 0.01ms !important;

@@ -49,10 +49,10 @@ export const useBookmarks = () => {
 
       if (error) throw error;
       setBookmarks(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error fetching bookmarks",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
     } finally {
@@ -74,10 +74,10 @@ export const useBookmarks = () => {
 
       if (error) throw error;
       setCollections(data || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error fetching collections",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
     }
@@ -101,10 +101,10 @@ export const useBookmarks = () => {
         description: "Your bookmark has been saved successfully.",
       });
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error adding bookmark",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
       return null;
@@ -124,10 +124,10 @@ export const useBookmarks = () => {
 
       setBookmarks(prev => prev.map(b => b.id === id ? data : b));
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error updating bookmark",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
       return null;
@@ -148,10 +148,10 @@ export const useBookmarks = () => {
         title: "Bookmark deleted",
         description: "The bookmark has been removed.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error deleting bookmark",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
     }
@@ -175,10 +175,10 @@ export const useBookmarks = () => {
         description: "Your new collection has been created.",
       });
       return data;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Error creating collection",
-        description: error.message,
+        description: error instanceof Error ? error.message : "An unknown error occurred",
         variant: "destructive",
       });
       return null;
