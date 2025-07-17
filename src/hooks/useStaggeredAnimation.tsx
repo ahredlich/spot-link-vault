@@ -17,7 +17,7 @@ export interface UseStaggeredAnimationOptions extends StaggeredAnimationOptions 
 }
 
 export interface StaggeredAnimationResult {
-  containerRef: React.RefObject<HTMLElement>;
+  containerRef: React.RefObject<HTMLDivElement>;
   getItemProps: (index: number) => {
     className: string;
     style: React.CSSProperties;
@@ -34,7 +34,7 @@ export interface StaggeredAnimationResult {
  */
 export const useStaggeredAnimation = (
   itemCount: number,
-  options: UseStaggeredAnimationOptions = {}
+  options: UseStaggeredAnimationOptions = { type: 'fade-in' }
 ): StaggeredAnimationResult => {
   const {
     type = 'fade-in',

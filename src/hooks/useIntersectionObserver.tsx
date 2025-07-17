@@ -19,7 +19,7 @@ export interface IntersectionObserverResult {
  */
 export const useIntersectionObserver = (
   options: IntersectionObserverOptions = {}
-): [React.RefObject<HTMLElement>, IntersectionObserverResult] => {
+): [React.RefObject<HTMLDivElement>, IntersectionObserverResult] => {
   const {
     threshold = 0.1,
     rootMargin = '50px',
@@ -27,7 +27,7 @@ export const useIntersectionObserver = (
     skip = false,
   } = options;
 
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
   const [isIntersecting, setIsIntersecting] = useState(false);
   const [hasIntersected, setHasIntersected] = useState(false);
   const [entry, setEntry] = useState<IntersectionObserverEntry | null>(null);
