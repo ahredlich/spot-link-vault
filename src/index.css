@@ -271,18 +271,19 @@ All colors MUST be HSL.
   }
 
   .search-glass-glow {
-    @apply backdrop-blur-xl border;
+    @apply backdrop-blur-xl border border-white/20;
     background: var(--gradient-glass-primary);
-    border-image: var(--gradient-border-primary) 1;
     box-shadow: var(--shadow-glass-sm);
+    border-radius: 8px;
     transition: var(--transition-glass);
   }
 
   .search-glass-glow:focus-within {
-    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.2), 
-                0 0 20px hsl(var(--primary) / 0.15),
+    box-shadow: 0 0 0 1px hsl(var(--primary) / 0.3), 
+                0 0 20px hsl(var(--primary) / 0.2),
+                0 0 40px hsl(var(--primary) / 0.1),
                 var(--shadow-glass-md);
-    border-image: linear-gradient(135deg, hsl(var(--primary) / 0.6), hsl(var(--accent) / 0.6)) 1;
+    border-color: hsl(var(--primary) / 0.4);
     outline: none;
   }
 
