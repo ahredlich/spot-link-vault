@@ -275,7 +275,7 @@ const Auth = () => {
             </span>
           </Link>
           <Link to="/">
-            <Button variant="ghost" className="gap-2 text-foreground hover:text-primary">
+            <Button variant="glass-secondary" className="gap-2 text-foreground hover:text-primary">
               <ArrowLeft className="h-4 w-4" />
               Back to Home
             </Button>

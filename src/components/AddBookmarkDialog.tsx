@@ -281,7 +281,7 @@ export const AddBookmarkDialog = ({ open, onOpenChange }: AddBookmarkDialogProps
                     onKeyPress={handleKeyPress}
                     className="search-glass flex-1"
                   />
-                  <Button type="button" onClick={addTag} variant="glass" size="icon">
+                  <Button type="button" onClick={addTag} variant="glass-accent" size="icon">
                     <Plus className="h-4 w-4" />
                   </Button>
                 </div>
