@@ -50,18 +50,49 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Glassmorphic effects */
-    --glass-bg: 240 20% 100%;
-    --glass-border: 240 20% 92%;
+    /* Enhanced glass effects */
+    --glass-bg-primary: 240 20% 100%;
+    --glass-bg-secondary: 240 20% 98%;
+    --glass-bg-tertiary: 240 20% 96%;
+    --glass-border-primary: 240 20% 90%;
+    --glass-border-secondary: 240 20% 85%;
     --glass-shadow: 240 20% 60%;
     
-    /* Gradients */
+    /* Enhanced shadows */
+    --shadow-glass-sm: 0 4px 16px 0 hsl(240 20% 60% / 0.08);
+    --shadow-glass-md: 0 8px 32px 0 hsl(240 20% 60% / 0.12);
+    --shadow-glass-lg: 0 16px 48px 0 hsl(240 20% 60% / 0.16);
+    --shadow-glass-xl: 0 24px 64px 0 hsl(240 20% 60% / 0.20);
+    
+    /* Enhanced gradients */
     --gradient-primary: linear-gradient(135deg, hsl(220 100% 60%), hsl(280 60% 65%));
+    --gradient-glass-primary: linear-gradient(135deg, hsl(240 20% 100% / 0.9), hsl(240 20% 98% / 0.7));
+    --gradient-glass-secondary: linear-gradient(135deg, hsl(240 20% 98% / 0.85), hsl(240 20% 96% / 0.65));
+    --gradient-glass-tertiary: linear-gradient(135deg, hsl(240 20% 96% / 0.8), hsl(240 20% 94% / 0.6));
+    --gradient-border-primary: linear-gradient(135deg, hsl(240 20% 90% / 0.6), hsl(240 20% 85% / 0.4));
+    --gradient-border-secondary: linear-gradient(135deg, hsl(240 20% 85% / 0.5), hsl(240 20% 80% / 0.3));
+    --gradient-accent: linear-gradient(135deg, hsl(220 100% 60% / 0.1), hsl(280 60% 65% / 0.1));
+    
+    /* Enhanced animation variables */
+    --transition-glass: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-scale: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fade: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slide: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Shimmer effect */
+    --shimmer-gradient: linear-gradient(90deg, transparent, hsl(240 20% 100% / 0.4), transparent);
+    --shimmer-duration: 2s;
+    
+    /* Enhanced easing functions */
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --ease-sharp: cubic-bezier(0.4, 0, 0.6, 1);
+    
+    /* Legacy support */
+    --glass-bg: 240 20% 100%;
+    --glass-border: 240 20% 92%;
     --gradient-glass: linear-gradient(135deg, hsl(240 20% 100% / 0.8), hsl(240 20% 98% / 0.6));
     --gradient-border: linear-gradient(135deg, hsl(240 20% 90%), hsl(240 20% 85%));
-    
-    /* Animations */
-    --transition-glass: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-glass: 0 8px 32px 0 hsl(240 20% 60% / 0.1);
     --shadow-glass-hover: 0 12px 40px 0 hsl(240 20% 60% / 0.15);
 
@@ -134,10 +165,10 @@ All colors MUST be HSL.
 }
 
 @layer components {
-  /* Glassmorphic card styles */
+  /* Enhanced Glassmorphic card styles */
   .glass-card {
     @apply backdrop-blur-md border border-glass-border/50 shadow-lg;
-    background: linear-gradient(135deg, hsl(240 20% 100% / 0.8), hsl(240 20% 98% / 0.6));
+    background: var(--gradient-glass-primary);
     transition: var(--transition-glass);
   }
   
@@ -146,23 +177,503 @@ All colors MUST be HSL.
     box-shadow: var(--shadow-glass-hover);
     transform: translateY(-2px);
   }
+
+  .glass-card-enhanced {
+    @apply backdrop-blur-xl border;
+    background: var(--gradient-glass-primary);
+    border-image: var(--gradient-border-primary) 1;
+    box-shadow: var(--shadow-glass-md);
+    transition: var(--transition-glass);
+  }
+
+  .glass-card-enhanced:hover {
+    box-shadow: var(--shadow-glass-lg);
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  .glass-card-secondary {
+    @apply backdrop-blur-lg border;
+    background: var(--gradient-glass-secondary);
+    border-image: var(--gradient-border-secondary) 1;
+    box-shadow: var(--shadow-glass-sm);
+    transition: var(--transition-glass);
+  }
+
+  .glass-card-tertiary {
+    @apply backdrop-blur-md border;
+    background: var(--gradient-glass-tertiary);
+    border-color: hsl(var(--glass-border-secondary) / 0.3);
+    box-shadow: var(--shadow-glass-sm);
+    transition: var(--transition-glass);
+  }
   
-  /* Glass button variants */
+  /* Enhanced Glass button variants */
   .btn-glass {
     @apply backdrop-blur-md border border-glass-border/50;
-    background: linear-gradient(135deg, hsl(240 20% 100% / 0.9), hsl(240 20% 96% / 0.7));
+    background: var(--gradient-glass-primary);
     transition: var(--transition-glass);
   }
   
   .btn-glass:hover {
-    background: linear-gradient(135deg, hsl(240 20% 100%), hsl(240 20% 98%));
+    background: linear-gradient(135deg, hsl(var(--glass-bg-primary)), hsl(var(--glass-bg-secondary)));
     transform: translateY(-1px);
-    box-shadow: var(--shadow-glass);
+    box-shadow: var(--shadow-glass-md);
+  }
+
+  .btn-glass-enhanced {
+    @apply backdrop-blur-lg border;
+    background: var(--gradient-glass-primary);
+    border-image: var(--gradient-border-primary) 1;
+    box-shadow: var(--shadow-glass-sm);
+    transition: var(--transition-glass);
+  }
+
+  .btn-glass-enhanced:hover {
+    background: linear-gradient(135deg, hsl(var(--glass-bg-primary)), hsl(var(--glass-bg-secondary)));
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-glass-md);
+  }
+
+  .btn-glass-enhanced:focus-visible {
+    @apply ring-2 ring-primary ring-offset-2;
+    outline: none;
   }
   
-  /* Search glass effect */
+  /* Enhanced Search glass effect */
   .search-glass {
     @apply backdrop-blur-lg border border-white/20;
-    background: linear-gradient(135deg, hsl(240 20% 100% / 0.95), hsl(240 20% 98% / 0.8));
+    background: var(--gradient-glass-primary);
+  }
+
+  .search-glass-enhanced {
+    @apply backdrop-blur-xl border;
+    background: var(--gradient-glass-primary);
+    border-image: var(--gradient-border-primary) 1;
+    box-shadow: var(--shadow-glass-sm);
+    transition: var(--transition-glass);
+  }
+
+  .search-glass-enhanced:focus-within {
+    box-shadow: var(--shadow-glass-md);
+    border-image: linear-gradient(135deg, hsl(var(--primary) / 0.6), hsl(var(--accent) / 0.6)) 1;
+  }
+
+  /* Shimmer effect */
+  .shimmer-effect {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer-effect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--shimmer-gradient);
+    animation: shimmer var(--shimmer-duration) infinite;
+    z-index: 1;
+  }
+
+  .shimmer-loading {
+    @apply shimmer-effect;
+    background: var(--gradient-glass-secondary);
+    border-radius: var(--radius);
+  }
+
+  /* Enhanced focus ring utilities that work with glass effects */
+  .focus-ring-glass {
+    @apply focus-visible:outline-none;
+  }
+
+  .focus-ring-glass:focus-visible {
+    box-shadow: 
+      0 0 0 2px hsl(var(--glass-bg-primary) / 0.9), 
+      0 0 0 4px hsl(var(--primary) / 0.6),
+      var(--shadow-glass-md);
+    transition: box-shadow var(--transition-scale);
+  }
+
+  .focus-ring-enhanced {
+    @apply focus-visible:outline-none;
+  }
+
+  .focus-ring-enhanced:focus-visible {
+    box-shadow: 
+      0 0 0 2px hsl(var(--glass-bg-primary)), 
+      0 0 0 4px hsl(var(--primary) / 0.6),
+      var(--shadow-glass-lg);
+    transition: box-shadow var(--transition-scale);
+  }
+
+  /* Focus ring variants for different contexts */
+  .focus-ring-accent:focus-visible {
+    box-shadow: 
+      0 0 0 2px hsl(var(--glass-bg-primary) / 0.9), 
+      0 0 0 4px hsl(var(--accent) / 0.6),
+      var(--shadow-glass-md);
+  }
+
+  .focus-ring-secondary:focus-visible {
+    box-shadow: 
+      0 0 0 2px hsl(var(--glass-bg-secondary) / 0.9), 
+      0 0 0 4px hsl(var(--foreground) / 0.3),
+      var(--shadow-glass-sm);
+  }
+
+  /* Gradient backgrounds */
+  .bg-gradient-glass-primary {
+    background: var(--gradient-glass-primary);
+  }
+
+  .bg-gradient-glass-secondary {
+    background: var(--gradient-glass-secondary);
+  }
+
+  .bg-gradient-glass-tertiary {
+    background: var(--gradient-glass-tertiary);
+  }
+
+  .bg-gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .bg-gradient-subtle {
+    background: linear-gradient(135deg, hsl(240 20% 98%), hsl(240 25% 96%));
+  }
+
+  .bg-gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  /* Enhanced shadow utilities */
+  .shadow-glass-sm {
+    box-shadow: var(--shadow-glass-sm);
+  }
+
+  .shadow-glass-md {
+    box-shadow: var(--shadow-glass-md);
+  }
+
+  .shadow-glass-lg {
+    box-shadow: var(--shadow-glass-lg);
+  }
+
+  .shadow-glass-xl {
+    box-shadow: var(--shadow-glass-xl);
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s var(--ease-smooth) forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 0.4s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s var(--ease-bounce) forwards;
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.4s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.4s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.4s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  .animate-fade-in-down {
+    animation: fadeInDown 0.4s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+
+  /* Staggered animation delay classes */
+  .animate-stagger-0 {
+    animation-delay: 0ms;
+  }
+
+  .animate-stagger-1 {
+    animation-delay: 100ms;
+  }
+
+  .animate-stagger-2 {
+    animation-delay: 200ms;
+  }
+
+  .animate-stagger-3 {
+    animation-delay: 300ms;
+  }
+
+  .animate-stagger-4 {
+    animation-delay: 400ms;
+  }
+
+  .animate-stagger-5 {
+    animation-delay: 500ms;
+  }
+
+  .animate-stagger-6 {
+    animation-delay: 600ms;
+  }
+
+  .animate-stagger-7 {
+    animation-delay: 700ms;
+  }
+
+  .animate-stagger-8 {
+    animation-delay: 800ms;
+  }
+
+  .animate-stagger-9 {
+    animation-delay: 900ms;
+  }
+
+  /* Fast animation variants */
+  .animate-fade-in-fast {
+    animation: fadeIn 0.2s var(--ease-smooth) forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-fast {
+    animation: slideIn 0.25s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  /* Slow animation variants */
+  .animate-fade-in-slow {
+    animation: fadeIn 0.5s var(--ease-smooth) forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-slow {
+    animation: slideIn 0.6s var(--ease-smooth) forwards;
+    opacity: 0;
+    transform: translateY(25px);
+  }
+
+  /* Bounce variants */
+  .animate-scale-in-bounce {
+    animation: scaleInBounce 0.4s var(--ease-bounce) forwards;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  .animate-fade-in-bounce {
+    animation: fadeInBounce 0.4s var(--ease-bounce) forwards;
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  /* Transition utilities */
+  .transition-glass {
+    transition: var(--transition-glass);
+  }
+
+  .transition-scale {
+    transition: var(--transition-scale);
+  }
+
+  .transition-fade {
+    transition: var(--transition-fade);
+  }
+
+  .transition-slide {
+    transition: var(--transition-slide);
+  }
+
+  /* Loading state utilities */
+  .loading-skeleton {
+    @apply shimmer-loading animate-pulse;
+    background: var(--gradient-glass-tertiary);
+  }
+
+  .loading-card {
+    @apply glass-card-tertiary shimmer-effect;
+  }
+
+  .loading-text {
+    @apply loading-skeleton;
+    height: 1rem;
+    border-radius: 0.25rem;
+  }
+
+  .loading-title {
+    @apply loading-skeleton;
+    height: 1.5rem;
+    border-radius: 0.25rem;
+  }
+}
+
+@layer utilities {
+  /* Keyframe animations */
+  @keyframes shimmer {
+    0% { 
+      left: -100%; 
+    }
+    100% { 
+      left: 100%; 
+    }
+  }
+
+  @keyframes fadeIn {
+    0% { 
+      opacity: 0; 
+    }
+    100% { 
+      opacity: 1; 
+    }
+  }
+
+  @keyframes slideIn {
+    0% { 
+      opacity: 0;
+      transform: translateY(20px); 
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes slideInLeft {
+    0% { 
+      opacity: 0;
+      transform: translateX(-20px); 
+    }
+    100% { 
+      opacity: 1;
+      transform: translateX(0); 
+    }
+  }
+
+  @keyframes slideInRight {
+    0% { 
+      opacity: 0;
+      transform: translateX(20px); 
+    }
+    100% { 
+      opacity: 1;
+      transform: translateX(0); 
+    }
+  }
+
+  @keyframes fadeInUp {
+    0% { 
+      opacity: 0;
+      transform: translateY(30px); 
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes fadeInDown {
+    0% { 
+      opacity: 0;
+      transform: translateY(-30px); 
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0); 
+    }
+  }
+
+  @keyframes scaleIn {
+    0% { 
+      opacity: 0;
+      transform: scale(0.9); 
+    }
+    100% { 
+      opacity: 1;
+      transform: scale(1); 
+    }
+  }
+
+  @keyframes scaleInBounce {
+    0% { 
+      opacity: 0;
+      transform: scale(0.8); 
+    }
+    50% { 
+      opacity: 0.8;
+      transform: scale(1.05); 
+    }
+    100% { 
+      opacity: 1;
+      transform: scale(1); 
+    }
+  }
+
+  @keyframes fadeInBounce {
+    0% { 
+      opacity: 0;
+      transform: scale(0.95); 
+    }
+    50% { 
+      opacity: 0.8;
+      transform: scale(1.02); 
+    }
+    100% { 
+      opacity: 1;
+      transform: scale(1); 
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer-effect::before {
+      animation: none;
+    }
+    
+    .animate-fade-in,
+    .animate-slide-in,
+    .animate-scale-in,
+    .animate-slide-in-left,
+    .animate-slide-in-right,
+    .animate-fade-in-up,
+    .animate-fade-in-down,
+    .animate-fade-in-fast,
+    .animate-slide-in-fast,
+    .animate-fade-in-slow,
+    .animate-slide-in-slow,
+    .animate-scale-in-bounce,
+    .animate-fade-in-bounce {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+    
+    .glass-card-enhanced:hover,
+    .btn-glass-enhanced:hover,
+    .glass-card:hover:not([role="dialog"]) {
+      transform: none;
+    }
+    
+    * {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
   }
 }
