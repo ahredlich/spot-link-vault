@@ -569,8 +569,8 @@ const BookmarkManager = () => {
 
   return (
     <div className="min-h-screen w-full flex">
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
+      {/* Desktop Sidebar - Fixed Position */}
+      <div className="hidden lg:block fixed left-0 top-0 h-screen z-30">
         <CollectionsSidebar 
           selectedCollection={selectedCollection}
           onCollectionSelect={setSelectedCollection}
@@ -590,8 +590,8 @@ const BookmarkManager = () => {
         </SheetContent>
       </Sheet>
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      {/* Main Content - Account for Fixed Sidebar */}
+      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
         {/* Header */}
         <header className="sticky top-0 z-10 glass-card-secondary border-b border-white/10">
           <div className="flex items-center justify-between p-3 sm:p-4 w-full">
@@ -610,13 +610,13 @@ const BookmarkManager = () => {
               </h1>
               
               {/* Search */}
-              <div className="relative flex-1 max-w-xs sm:max-w-md">
+              <div className="relative flex-1 max-w-xs sm:max-w-sm">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 search-glass-enhanced text-sm focus-ring-accent"
+                  className="pl-10 search-glass-glow text-sm"
                 />
               </div>
             </div>
