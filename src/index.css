@@ -963,6 +963,158 @@ All colors MUST be HSL.
     height: 1.5rem;
     border-radius: 0.25rem;
   }
+
+  /* Enhanced CollectionsSidebar Visual Hierarchy Styles */
+  
+  /* Custom scrollbar styling for sidebar */
+  .collections-sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--glass-border-primary) / 0.3) transparent;
+  }
+
+  .collections-sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .collections-sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+  }
+
+  .collections-sidebar-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, 
+      hsl(var(--glass-border-primary) / 0.4), 
+      hsl(var(--glass-border-secondary) / 0.2)
+    );
+    border-radius: 3px;
+    transition: var(--transition-glass);
+  }
+
+  .collections-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--glass-border-primary) / 0.6), 
+      hsl(var(--glass-border-secondary) / 0.4)
+    );
+  }
+
+  /* Section gradient backgrounds for sidebar */
+  .sidebar-section-gradient-blue {
+    background: linear-gradient(135deg, 
+      hsl(220 100% 95% / 0.3), 
+      hsl(220 100% 98% / 0.1)
+    );
+  }
+
+  .sidebar-section-gradient-purple {
+    background: linear-gradient(135deg, 
+      hsl(280 60% 95% / 0.2), 
+      hsl(280 60% 98% / 0.1)
+    );
+  }
+
+  .sidebar-section-gradient-slate {
+    background: linear-gradient(135deg, 
+      hsl(240 20% 95% / 0.2), 
+      hsl(240 20% 98% / 0.1)
+    );
+  }
+
+  /* Enhanced gradient accent lines */
+  .gradient-accent-line-blue {
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(220 100% 70% / 0.4), 
+      transparent
+    );
+  }
+
+  .gradient-accent-line-purple {
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(280 60% 70% / 0.4), 
+      transparent
+    );
+  }
+
+  .gradient-accent-line-neutral {
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(240 20% 80% / 0.4), 
+      transparent
+    );
+  }
+
+  /* Enhanced section dividers */
+  .section-divider-enhanced {
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent, 
+      hsl(var(--glass-border-primary) / 0.3), 
+      hsl(var(--glass-border-secondary) / 0.2),
+      transparent
+    );
+    margin: 1.5rem 0;
+  }
+
+  /* Enhanced typography for sidebar sections */
+  .sidebar-section-title {
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: -0.025em;
+    line-height: 1.25;
+    color: hsl(var(--foreground));
+  }
+
+  .sidebar-section-subtitle {
+    font-weight: 500;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Enhanced list view micro-interactions */
+  .list-item-hover {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .list-item-hover:hover {
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: var(--shadow-glass-lg);
+    will-change: transform;
+  }
+
+  /* Enhanced tag hover effects */
+  .tag-enhanced {
+    transition: var(--transition-glass);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .tag-enhanced:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
+
+  /* Enhanced status badge effects */
+  .status-badge-enhanced {
+    transition: var(--transition-glass);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .status-badge-enhanced:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
 }
 
 @layer utilities {

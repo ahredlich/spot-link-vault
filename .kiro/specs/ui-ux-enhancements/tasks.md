@@ -32,7 +32,7 @@
   - _Requirements: 2.1, 2.3, 2.6, 2.7_
   - _Design Reference: "Enhanced BookmarkCard Component" → "Grid View Enhancements" and "Component Interface"_
 
-- [ ] 5. Enhanced BookmarkCard Component - List View
+- [x] 5. Enhanced BookmarkCard Component - List View
   - Improve spacing and visual hierarchy in list view
   - Add enhanced metadata display with reading time and formatted dates
   - Implement better tag styling with gradient backgrounds
@@ -40,7 +40,7 @@
   - _Requirements: 2.2, 2.4, 2.5, 2.7_
   - _Design Reference: "Enhanced BookmarkCard Component" → "List View Enhancements" and "Component Interface"_
 
-- [ ] 6. Enhanced CollectionsSidebar Visual Hierarchy
+- [x] 6. Enhanced CollectionsSidebar Visual Hierarchy
   - Add gradient accent lines to separate sidebar sections
   - Implement better visual hierarchy with improved typography
   - Create enhanced spacing system throughout sidebar
