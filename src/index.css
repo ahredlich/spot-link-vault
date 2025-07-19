@@ -963,6 +963,49 @@ All colors MUST be HSL.
     height: 1.5rem;
     border-radius: 0.25rem;
   }
+
+  /* Enhanced list view micro-interactions */
+  .list-item-hover {
+    transition: var(--transition-glass-hover);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    contain: layout style paint;
+    isolation: isolate;
+  }
+
+  .list-item-hover:hover {
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: var(--shadow-glass-lg);
+    will-change: transform;
+  }
+
+  /* Enhanced tag hover effects */
+  .tag-enhanced {
+    transition: var(--transition-glass);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .tag-enhanced:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
+
+  /* Enhanced status badge effects */
+  .status-badge-enhanced {
+    transition: var(--transition-glass);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .status-badge-enhanced:hover {
+    transform: scale(1.05) translateZ(0);
+    box-shadow: var(--shadow-glass-md);
+    will-change: transform;
+  }
 }
 
 @layer utilities {
