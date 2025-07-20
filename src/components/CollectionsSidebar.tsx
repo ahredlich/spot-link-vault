@@ -212,56 +212,115 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
         </div>
       </ScrollArea>
 
-      {/* Enhanced Footer with User Menu */}
+      {/* Enhanced Footer with User Profile Section */}
       <div className="p-6 border-t border-white/10 relative">
-        {/* Subtle background gradient for footer */}
-        <div className="absolute inset-0 bg-gradient-to-tr from-slate-50/20 to-transparent pointer-events-none" />
+        {/* Enhanced background gradient for footer */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-slate-50/30 via-blue-50/10 to-transparent pointer-events-none" />
         
-        {/* Gradient accent line at top of footer */}
-        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+        {/* Enhanced gradient accent line at top of footer */}
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent" />
         
-        {/* User Menu with enhanced styling */}
+        {/* Enhanced User Profile Section */}
         {user && (
           <div className="relative z-10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="glass-secondary" className="w-full justify-between h-12 px-3 transition-glass hover:shadow-glass-md">
+                <Button 
+                  variant="glass-secondary" 
+                  className="w-full justify-between h-14 px-4 transition-glass hover:shadow-glass-lg hover:scale-[1.01] hover:-translate-y-0.5 group"
+                >
+                  <div className="flex items-center gap-4">
+                    {/* Enhanced Avatar with Status Indicator */}
+                    <div className="relative">
+                      <Avatar className="h-10 w-10 ring-2 ring-white/30 shadow-glass-sm transition-all duration-300 group-hover:ring-white/50 group-hover:shadow-glass-md">
+                        <AvatarImage 
+                          src={user.user_metadata?.avatar_url} 
+                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                        <AvatarFallback className="bg-gradient-primary text-white text-sm font-bold shadow-inner">
+                          {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      {/* Online Status Indicator */}
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm transition-all duration-300 group-hover:scale-110">
+                        <div className="w-full h-full bg-green-400 rounded-full animate-pulse" />
+                      </div>
+                    </div>
+                    
+                    {/* Enhanced User Information Layout */}
+                    <div className="flex flex-col items-start min-w-0 flex-1 space-y-0.5">
+                      <span className="text-sm font-bold text-foreground truncate max-w-full tracking-tight transition-colors duration-300 group-hover:text-primary">
+                        {user.user_metadata?.full_name || 'User'}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate max-w-full font-medium tracking-wide transition-colors duration-300 group-hover:text-foreground/70">
+                        {user.email}
+                      </span>
+                      {/* User Status Badge */}
+                      <div className="flex items-center gap-1.5 mt-1">
+                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                        <span className="text-xs text-green-600 font-medium tracking-wide">
+                          Online
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Enhanced Chevron with Animation */}
+                  <ChevronUp className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:text-foreground group-hover:scale-110 group-data-[state=open]:rotate-180" />
+                </Button>
+              </DropdownMenuTrigger>
+              
+              {/* Enhanced Dropdown Menu with Glass Morphism */}
+              <DropdownMenuContent 
+                align="end" 
+                className="w-64 glass-card-enhanced border-white/20 shadow-glass-xl backdrop-blur-xl"
+                sideOffset={8}
+              >
+                {/* User Info Header in Dropdown */}
+                <div className="px-3 py-3 border-b border-white/10">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-8 w-8 ring-2 ring-white/20">
+                    <Avatar className="h-8 w-8 ring-1 ring-white/20">
                       <AvatarImage src={user.user_metadata?.avatar_url} />
-                      <AvatarFallback className="bg-gradient-primary text-white text-sm font-semibold">
+                      <AvatarFallback className="bg-gradient-primary text-white text-xs font-bold">
                         {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="flex flex-col items-start min-w-0 flex-1">
-                      <span className="text-sm font-semibold text-foreground truncate max-w-full">
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <span className="text-sm font-bold text-foreground truncate">
                         {user.user_metadata?.full_name || 'User'}
                       </span>
-                      <span className="text-xs text-muted-foreground truncate max-w-full font-medium">
+                      <span className="text-xs text-muted-foreground truncate font-medium">
                         {user.email}
                       </span>
                     </div>
                   </div>
-                  <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 glass-card-enhanced">
-                <DropdownMenuItem className="gap-3 text-foreground hover:bg-white/10 h-10 font-medium">
-                  <User className="h-4 w-4" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem className="gap-3 text-foreground hover:bg-white/10 h-10 font-medium">
-                  <Settings className="h-4 w-4" />
-                  Settings
-                </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                <DropdownMenuItem 
-                  className="gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 h-10 font-medium"
-                  onClick={signOut}
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </DropdownMenuItem>
+                </div>
+                
+                {/* Enhanced Menu Items */}
+                <div className="p-1">
+                  <DropdownMenuItem className="gap-3 text-foreground hover:bg-white/15 hover:backdrop-blur-sm h-11 font-medium rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-glass-sm">
+                    <User className="h-4 w-4 text-primary" />
+                    <span>Profile Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="gap-3 text-foreground hover:bg-white/15 hover:backdrop-blur-sm h-11 font-medium rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-glass-sm">
+                    <Settings className="h-4 w-4 text-primary" />
+                    <span>Preferences</span>
+                  </DropdownMenuItem>
+                </div>
+                
+                {/* Enhanced Separator */}
+                <DropdownMenuSeparator className="bg-gradient-to-r from-transparent via-white/25 to-transparent my-2" />
+                
+                {/* Sign Out Item */}
+                <div className="p-1">
+                  <DropdownMenuItem 
+                    className="gap-3 text-red-500 hover:text-red-400 hover:bg-red-500/15 hover:backdrop-blur-sm h-11 font-medium rounded-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-glass-sm"
+                    onClick={signOut}
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Sign Out</span>
+                  </DropdownMenuItem>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
