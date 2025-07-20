@@ -18,8 +18,8 @@ const __dirname = path.dirname(__filename);
 // Configuration
 const PORT = 8080;
 const SHUTDOWN_TIMEOUT = 5000; // 5 seconds
-const VITE_COMMAND = 'vite';
-const VITE_ARGS = ['--host', '0.0.0.0', '--port', PORT.toString()];
+const VITE_COMMAND = 'npx';
+const VITE_ARGS = ['vite', '--host', '0.0.0.0', '--port', PORT.toString()];
 
 // Track child processes
 let viteProcess = null;
