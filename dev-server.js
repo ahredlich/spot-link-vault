@@ -124,6 +124,21 @@ const startViteServer = async () => {
   });
 
   log(`Vite dev server process started with PID ${viteProcess.pid}`);
+
+  // Keep the wrapper process alive while Vite is running
+  return new Promise((resolve, reject) => {
+    viteProcess.on('exit', (code, signal) => {
+      if (isShuttingDown) {
+        resolve();
+      } else {
+        reject(new Error(`Vite process exited with code ${code} and signal ${signal}`));
+      }
+    });
+
+    viteProcess.on('error', (error) => {
+      reject(error);
+    });
+  });
 };
 
 /**
