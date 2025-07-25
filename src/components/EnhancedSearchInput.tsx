@@ -14,6 +14,7 @@ interface EnhancedSearchInputProps {
   totalCount?: number;
   onQuickFilter?: (filter: 'favorites' | 'recent' | 'clear') => void;
   showQuickFilters?: boolean;
+  activeQuickFilter?: 'favorites' | 'recent' | null;
 }
 
 export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
@@ -26,6 +27,7 @@ export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
   totalCount = 0,
   onQuickFilter,
   showQuickFilters = false,
+  activeQuickFilter = null,
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -86,62 +88,9 @@ export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
         )}
       </div>
       
-      {/* Quick Filter Buttons */}
-      {showQuickFilters && onQuickFilter && (
-        <div className="search-dropdown-content">
-          <div className="glass-card-secondary p-2 border border-white/10 rounded-md shadow-lg backdrop-blur-xl dropdown-glass-enhanced">
-            <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onQuickFilter('favorites')}
-                className="h-6 px-2 text-xs gap-1 hover:bg-white/20 text-muted-foreground hover:text-foreground"
-              >
-                <Star className="h-3 w-3" />
-                Favorites
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onQuickFilter('recent')}
-                className="h-6 px-2 text-xs gap-1 hover:bg-white/20 text-muted-foreground hover:text-foreground"
-              >
-                <Clock className="h-3 w-3" />
-                Recent
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onQuickFilter('clear')}
-                className="h-6 px-2 text-xs hover:bg-white/20 text-muted-foreground hover:text-foreground"
-              >
-                Clear
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Quick Filter Buttons - Removed dropdown indicators */}
       
-      {/* Search Results Summary */}
-      {showResultsCount && (isSearching || resultsCount !== totalCount) && (
-        <div className="search-dropdown-content">
-          <div className="glass-card-secondary px-3 py-2 text-xs text-muted-foreground border border-white/10 rounded-md shadow-lg backdrop-blur-xl dropdown-glass-enhanced">
-            {resultsCount === 0 ? (
-              <span className="text-amber-600">
-                {isSearching ? `No results found for "${value}"` : "No bookmarks match current filters"}
-              </span>
-            ) : (
-              <span>
-                {isSearching ? (
-                  <>Found <span className="text-primary font-medium">{resultsCount}</span> of {totalCount} bookmarks</>
-                ) : (
-                  <>Showing <span className="text-primary font-medium">{resultsCount}</span> of {totalCount} bookmarks</>
-                )}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
+      {/* Search Results Summary - Removed dropdown indicators */}
     </div>
   );
 };
