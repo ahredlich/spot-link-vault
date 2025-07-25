@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -373,7 +374,7 @@ export const PerformanceTestDialog: React.FC<PerformanceTestDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card-enhanced max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="glass-card-enhanced max-w-2xl max-h-[80vh] scrollbar-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
@@ -381,7 +382,8 @@ export const PerformanceTestDialog: React.FC<PerformanceTestDialogProps> = ({
           </DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
+        <ScrollArea className="max-h-[calc(80vh-6rem)]" scrollbarVariant="dialog">
+          <div className="space-y-4">
           <div className="glass-card p-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-4">
@@ -456,8 +458,9 @@ export const PerformanceTestDialog: React.FC<PerformanceTestDialogProps> = ({
                 </div>
               </Card>
             ))}
+            </div>
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

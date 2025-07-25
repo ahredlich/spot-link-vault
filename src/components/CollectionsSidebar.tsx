@@ -33,6 +33,17 @@ const collections = [
   { name: "Design", count: 8, icon: Folder },
   { name: "Technology", count: 12, icon: Folder },
   { name: "Research", count: 5, icon: Folder },
+  { name: "JavaScript", count: 23, icon: Folder },
+  { name: "React", count: 18, icon: Folder },
+  { name: "CSS", count: 14, icon: Folder },
+  { name: "Node.js", count: 9, icon: Folder },
+  { name: "Python", count: 11, icon: Folder },
+  { name: "Machine Learning", count: 7, icon: Folder },
+  { name: "DevOps", count: 6, icon: Folder },
+  { name: "Mobile Development", count: 13, icon: Folder },
+  { name: "Database", count: 8, icon: Folder },
+  { name: "Security", count: 4, icon: Folder },
+  { name: "Testing", count: 10, icon: Folder },
 ];
 
 const quickAccess = [
@@ -80,7 +91,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
         <div className="absolute bottom-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       </div>
 
-      <ScrollArea className="flex-1 collections-sidebar-scroll">
+      <ScrollArea className="flex-1 collections-sidebar-scroll" scrollbarVariant="sidebar">
         <div className="px-6 py-5 space-y-8">
           {/* Quick Access Section with enhanced visual hierarchy */}
           <div className="relative">
