@@ -684,51 +684,51 @@ const BookmarkManager = () => {
             </div>
 
             {/* Row 2 - Statistics and Overview */}
-            <div className="glass-card bg-gradient-subtle p-4 rounded-xl border border-primary/20 shadow-glass-lg backdrop-blur-xl">
+            <div className="glass-card bg-gradient-subtle p-2 rounded-lg border border-primary/20 shadow-glass-lg backdrop-blur-xl">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 bg-gradient-primary rounded-full shadow-glass-sm"></div>
-                    <span className="font-semibold text-base bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-gradient-primary rounded-full shadow-glass-sm"></div>
+                    <span className="font-semibold text-xs bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {filteredBookmarks.length} of {mockBookmarks.length} bookmarks
                     </span>
                   </div>
                   {selectedCollection !== "All" && (
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/25">
-                      <Tag className="h-4 w-4 text-accent" />
-                      <span className="font-medium text-sm text-accent">in {selectedCollection}</span>
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/15 border border-accent/25">
+                      <Tag className="h-3 w-3 text-accent" />
+                      <span className="font-medium text-xs text-accent">in {selectedCollection}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20">
-                    <Heart className="h-4 w-4 text-red-500 fill-current" />
-                    <span className="font-semibold text-sm text-red-500">{mockBookmarks.filter(b => b.isFavorite).length}</span>
-                    <span className="text-muted-foreground text-sm">favorites</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20">
+                    <Heart className="h-3 w-3 text-red-500 fill-current" />
+                    <span className="font-semibold text-xs text-red-500">{mockBookmarks.filter(b => b.isFavorite).length}</span>
+                    <span className="text-muted-foreground text-xs">favorites</span>
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
-                    <BookOpen className="h-4 w-4 text-green-500" />
-                    <span className="font-semibold text-sm text-green-500">{mockBookmarks.filter(b => b.isRead).length}</span>
-                    <span className="text-muted-foreground text-sm">read</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                    <BookOpen className="h-3 w-3 text-green-500" />
+                    <span className="font-semibold text-xs text-green-500">{mockBookmarks.filter(b => b.isRead).length}</span>
+                    <span className="text-muted-foreground text-xs">read</span>
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-                    <Calendar className="h-4 w-4 text-blue-500" />
-                    <span className="font-semibold text-sm text-blue-500">{mockBookmarks.filter(b => {
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                    <Calendar className="h-3 w-3 text-blue-500" />
+                    <span className="font-semibold text-xs text-blue-500">{mockBookmarks.filter(b => {
                       const weekAgo = new Date();
                       weekAgo.setDate(weekAgo.getDate() - 7);
                       return b.createdAt >= weekAgo;
                     }).length}</span>
-                    <span className="text-muted-foreground text-sm">this week</span>
+                    <span className="text-muted-foreground text-xs">this week</span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Row 3 - Search and Primary Filters */}
-            <div className="flex items-center gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Enhanced Search - Full width with larger size */}
-              <div className="flex-1 max-w-xl">
+              <div className="flex-1 max-w-lg">
                 <EnhancedSearchInput
                   value={searchQuery}
                   onChange={setSearchQuery}
@@ -742,31 +742,31 @@ const BookmarkManager = () => {
               </div>
               
               {/* Quick Action Buttons */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Button
                   variant={quickFilter === 'favorites' ? "default" : "glass-secondary"}
                   size="sm"
                   onClick={() => handleQuickFilter('favorites')}
-                  className={`gap-1 h-8 px-3 transition-all duration-200 ${
+                  className={`gap-1 h-6 px-2 transition-all duration-200 ${
                     quickFilter === 'favorites' 
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Star className={`h-3 w-3 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
+                  <Star className={`h-2 w-2 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
                   <span className="hidden sm:inline text-xs">Favorites</span>
                 </Button>
                 <Button
                   variant={quickFilter === 'recent' ? "default" : "glass-secondary"}
                   size="sm"
                   onClick={() => handleQuickFilter('recent')}
-                  className={`gap-1 h-8 px-3 transition-all duration-200 ${
+                  className={`gap-1 h-6 px-2 transition-all duration-200 ${
                     quickFilter === 'recent' 
                       ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Clock className="h-3 w-3" />
+                  <Clock className="h-2 w-2" />
                   <span className="hidden sm:inline text-xs">Recent</span>
                 </Button>
               </div>
@@ -774,11 +774,11 @@ const BookmarkManager = () => {
 
             {/* Row 4 - Active Filters and Secondary Actions */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-1 flex-wrap">
                 {selectedCollection !== "All" && (
-                  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent">
-                    <Tag className="h-3 w-3" />
-                    <span className="font-medium text-sm">{selectedCollection} Collection</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent">
+                    <Tag className="h-2 w-2" />
+                    <span className="font-medium text-xs">{selectedCollection} Collection</span>
                   </div>
                 )}
               </div>
