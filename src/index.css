@@ -559,6 +559,52 @@ All colors MUST be HSL.
     outline: none;
   }
 
+  /* Enhanced Search Input Styles */
+  .search-glass-enhanced {
+    @apply backdrop-blur-xl border border-white/20;
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.9), 
+      hsla(240, 20%, 98%, 0.7)
+    );
+    box-shadow: var(--shadow-glass-sm);
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .search-glass-enhanced:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: var(--shadow-glass-md);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.95), 
+      hsla(240, 20%, 98%, 0.8)
+    );
+  }
+
+  .search-glass-focused {
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2), 
+                0 0 20px hsl(var(--primary) / 0.15),
+                0 0 40px hsl(var(--primary) / 0.08),
+                var(--shadow-glass-lg);
+    border-color: hsl(var(--primary) / 0.5);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.98), 
+      hsla(240, 20%, 98%, 0.85)
+    );
+    outline: none;
+  }
+
+  .search-glass-active {
+    border-color: hsl(var(--primary) / 0.4);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.95), 
+      hsla(240, 20%, 98%, 0.8)
+    );
+  }
+
   /* Optimized Shimmer Effect - Enhanced performance with GPU acceleration */
   .shimmer-effect {
     position: relative;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload, Menu, Star, Shield, Zap, Download, Heart, BookOpen, Users, Sparkles } from "lucide-react";
+import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload, Menu, Star, Shield, Zap, Download, Heart, BookOpen, Users, Sparkles, Clock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { AddBookmarkDialog } from "@/components/AddBookmarkDialog";
 import { CollectionsSidebar } from "@/components/CollectionsSidebar";
 import { BookmarkCardSkeleton, SidebarSkeleton } from "@/components/LoadingSkeleton";
 import { PerformanceTestDialog } from "@/components/PerformanceTestDialog";
+import { EnhancedSearchInput } from "@/components/EnhancedSearchInput";
 import { useAuth } from "@/hooks/useAuth";
 import { useStaggeredAnimation, useStaggeredFadeIn } from "@/hooks/useStaggeredAnimation";
 import { useZoomPerformance } from "@/hooks/useZoomPerformance";
@@ -544,6 +545,7 @@ const BookmarkManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [performanceMonitoringEnabled, setPerformanceMonitoringEnabled] = useState(false);
   const [isPerformanceTestOpen, setIsPerformanceTestOpen] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<'favorites' | 'recent' | null>(null);
 
   // Zoom performance optimization
   const { isZooming, shouldReduceAnimations } = useZoomPerformance();
@@ -562,8 +564,28 @@ const BookmarkManager = () => {
     
     const matchesCollection = selectedCollection === "All" || bookmark.collection === selectedCollection;
     
-    return matchesSearch && matchesCollection;
+    // Apply quick filters
+    let matchesQuickFilter = true;
+    if (quickFilter === 'favorites') {
+      matchesQuickFilter = bookmark.isFavorite;
+    } else if (quickFilter === 'recent') {
+      // Show bookmarks from the last 7 days
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      matchesQuickFilter = bookmark.createdAt >= weekAgo;
+    }
+    
+    return matchesSearch && matchesCollection && matchesQuickFilter;
   });
+
+  const handleQuickFilter = (filter: 'favorites' | 'recent' | 'clear') => {
+    if (filter === 'clear') {
+      setQuickFilter(null);
+      setSearchQuery("");
+    } else {
+      setQuickFilter(filter);
+    }
+  };
 
   // Use staggered animation for bookmark cards with performance optimizations
   const bookmarkAnimation = useStaggeredAnimation(filteredBookmarks.length, {
@@ -618,16 +640,33 @@ const BookmarkManager = () => {
                 Bookmarks
               </h1>
               
-              {/* Search */}
-              <div className="relative flex-1 max-w-xs sm:max-w-sm">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 search-glass-glow text-sm"
-                />
-              </div>
+              {/* Enhanced Search */}
+              <EnhancedSearchInput
+                value={searchQuery}
+                onChange={setSearchQuery}
+                showResultsCount={searchQuery.length > 0 || quickFilter !== null}
+                resultsCount={filteredBookmarks.length}
+                totalCount={mockBookmarks.length}
+                onQuickFilter={handleQuickFilter}
+                showQuickFilters={searchQuery.length === 0 && !quickFilter}
+              />
+              
+              {/* Active Filter Indicator */}
+              {quickFilter && (
+                <div className="hidden sm:flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 border border-primary/20 text-primary text-xs">
+                  {quickFilter === 'favorites' && <Star className="h-3 w-3" />}
+                  {quickFilter === 'recent' && <Clock className="h-3 w-3" />}
+                  <span className="capitalize">{quickFilter}</span>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setQuickFilter(null)}
+                    className="h-4 w-4 p-0 ml-1 hover:bg-primary/20"
+                  >
+                    <X className="h-2 w-2" />
+                  </Button>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-1 sm:gap-2">
@@ -745,9 +784,20 @@ const BookmarkManager = () => {
             <div className="flex flex-col items-center justify-center py-8 sm:py-12">
               <div className="glass-card p-6 sm:p-8 text-center max-w-md mx-auto">
                 <Bookmark className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-base sm:text-lg font-semibold mb-2">No bookmarks found</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  {searchQuery || quickFilter ? "No bookmarks found" : "No bookmarks yet"}
+                </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {searchQuery ? "Try adjusting your search terms" : "Start by adding your first bookmark"}
+                  {searchQuery 
+                    ? `No results for "${searchQuery}". Try different keywords or check your spelling.`
+                    : quickFilter === 'favorites'
+                    ? "You haven't marked any bookmarks as favorites yet."
+                    : quickFilter === 'recent'
+                    ? "No bookmarks added in the last 7 days."
+                    : selectedCollection !== "All"
+                    ? `No bookmarks in the "${selectedCollection}" collection yet.`
+                    : "Start building your bookmark collection by adding your first link."
+                  }
                 </p>
                 <Button variant="glass-primary" onClick={() => setIsAddDialogOpen(true)} className="text-sm">
                   <Plus className="h-4 w-4 mr-2" />
