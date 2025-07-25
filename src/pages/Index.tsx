@@ -730,7 +730,7 @@ const BookmarkManager = () => {
         )}
 
         {/* Content */}
-        <main className="flex-1 p-3 sm:p-6 w-full">
+        <main className="flex-1 p-3 sm:p-6 w-full overflow-auto scrollbar-primary max-h-screen">
           {isLoading ? (
             <div className={
               viewMode === "grid" 
@@ -756,14 +756,15 @@ const BookmarkManager = () => {
               </div>
             </div>
           ) : (
-            <div 
-              ref={bookmarkAnimation.containerRef}
-              className={
-                viewMode === "grid" 
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized card-grid-container" 
-                  : "space-y-3 sm:space-y-4 bookmark-list-container"
-              }
-            >
+            <>
+              <div 
+                ref={bookmarkAnimation.containerRef}
+                className={
+                  viewMode === "grid" 
+                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized card-grid-container" 
+                    : "space-y-3 sm:space-y-4 bookmark-list-container"
+                }
+              >
               {filteredBookmarks.map((bookmark, index) => {
                 const itemProps = bookmarkAnimation.getItemProps(index);
                 return (
@@ -784,7 +785,8 @@ const BookmarkManager = () => {
                   </div>
                 );
               })}
-            </div>
+              </div>
+            </>
           )}
         </main>
       </div>

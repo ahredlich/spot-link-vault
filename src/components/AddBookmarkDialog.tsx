@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -189,7 +190,7 @@ export const AddBookmarkDialog = ({ open, onOpenChange }: AddBookmarkDialogProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-card border-white/20 max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="glass-card border-white/20 max-w-4xl max-h-[90vh] scrollbar-dialog">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Link className="h-5 w-5 text-primary" />
@@ -200,7 +201,8 @@ export const AddBookmarkDialog = ({ open, onOpenChange }: AddBookmarkDialogProps
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs defaultValue="add" className="space-y-4">
+        <ScrollArea className="max-h-[calc(90vh-8rem)]" scrollbarVariant="dialog">
+          <Tabs defaultValue="add" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3 glass-card border-white/20">
             <TabsTrigger value="add" className="data-[state=active]:bg-white/20">
               <Plus className="h-4 w-4 mr-2" />
@@ -576,7 +578,8 @@ export const AddBookmarkDialog = ({ open, onOpenChange }: AddBookmarkDialogProps
               </div>
             </Card>
           </TabsContent>
-        </Tabs>
+          </Tabs>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
