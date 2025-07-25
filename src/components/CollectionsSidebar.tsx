@@ -122,7 +122,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                       <Button
                         variant={isSelected ? "glass-primary" : "glass-secondary"}
                         className={`
-                          w-full justify-between h-11 px-4 py-2.5 transition-glass font-medium
+                          w-full justify-between h-11 px-4 py-2.5 transition-all-smooth font-medium
                           ${isSelected 
                             ? 'bg-gradient-to-r from-primary/15 to-accent/15 border-primary/25 text-primary shadow-glass-md hover:from-primary/20 hover:to-accent/20 hover:shadow-glass-lg hover:scale-[1.01] hover:-translate-y-0.5' 
                             : 'hover:bg-gradient-to-r hover:from-white/12 hover:to-white/8 hover:border-white/25 hover:shadow-glass-md hover:scale-[1.005] hover:-translate-y-0.5'
@@ -133,19 +133,19 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                       >
                         {/* Enhanced gradient overlay for selected state */}
                         {isSelected && (
-                          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-50 transition-opacity duration-300 group-hover:opacity-70" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-50 transition-opacity group-hover:opacity-70" />
                         )}
                         
                         <div className="flex items-center gap-3.5 relative z-10 min-w-0 flex-1">
                           <div className={`
-                            p-1.5 rounded-lg transition-all duration-300 flex-shrink-0
+                            p-1.5 rounded-lg transition-all-smooth flex-shrink-0
                             ${isSelected 
                               ? 'bg-gradient-to-br from-primary/20 to-accent/20 shadow-sm' 
                               : 'bg-white/10 group-hover:bg-white/15 group-hover:shadow-sm'
                             }
                           `}>
                             <Icon className={`
-                              h-4 w-4 transition-all duration-300
+                              h-4 w-4 transition-all-smooth
                               ${isSelected 
                                 ? 'text-primary drop-shadow-sm' 
                                 : 'text-foreground/70 group-hover:text-foreground group-hover:scale-105'
@@ -153,7 +153,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                             `} />
                           </div>
                           <span className={`
-                            text-sm transition-all duration-300 font-medium flex-1 min-w-0 text-left
+                            text-sm transition-all-smooth font-medium flex-1 min-w-0 text-left
                             ${isSelected 
                               ? 'text-primary font-semibold' 
                               : 'text-foreground/80 group-hover:text-foreground'
@@ -170,7 +170,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                           <Badge 
                             variant="secondary" 
                             className={`
-                              text-xs font-bold transition-all duration-300 border
+                              text-xs font-bold transition-all-smooth border
                               ${isSelected 
                                 ? 'bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary shadow-sm' 
                                 : 'bg-gradient-to-r from-white/15 to-white/10 border-white/25 text-foreground/70 group-hover:from-white/20 group-hover:to-white/15 group-hover:border-white/35 group-hover:text-foreground group-hover:shadow-sm'
@@ -215,7 +215,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-7 w-7 hover:bg-white/10 transition-glass"
+                  className="h-7 w-7 hover:bg-white/10 transition-all-smooth"
                   onClick={() => setIsCollectionsExpanded(!isCollectionsExpanded)}
                 >
                   {isCollectionsExpanded ? (
@@ -243,7 +243,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                         <Button
                           variant={isSelected ? "glass-primary" : "glass-secondary"}
                           className={`
-                            w-full justify-between h-11 px-4 py-2.5 transition-glass font-medium
+                            w-full justify-between h-11 px-4 py-2.5 transition-all-smooth font-medium
                             ${isSelected 
                               ? 'bg-gradient-to-r from-primary/15 to-accent/15 border-primary/25 text-primary shadow-glass-md hover:from-primary/20 hover:to-accent/20 hover:shadow-glass-lg hover:scale-[1.01] hover:-translate-y-0.5' 
                               : 'hover:bg-gradient-to-r hover:from-white/12 hover:to-white/8 hover:border-white/25 hover:shadow-glass-md hover:scale-[1.005] hover:-translate-y-0.5'
@@ -254,19 +254,19 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                         >
                           {/* Enhanced gradient overlay for selected state */}
                           {isSelected && (
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-50 transition-opacity duration-300 group-hover:opacity-70" />
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 opacity-50 transition-opacity group-hover:opacity-70" />
                           )}
                           
                           <div className="flex items-center gap-3.5 relative z-10 min-w-0 flex-1">
                             <div className={`
-                              p-1.5 rounded-lg transition-all duration-300 flex-shrink-0
+                              p-1.5 rounded-lg transition-all-smooth flex-shrink-0
                               ${isSelected 
                                 ? 'bg-gradient-to-br from-primary/20 to-accent/20 shadow-sm' 
                                 : 'bg-white/10 group-hover:bg-white/15 group-hover:shadow-sm'
                               }
                             `}>
                               <Icon className={`
-                                h-4 w-4 transition-all duration-300
+                                h-4 w-4 transition-all-smooth
                                 ${isSelected 
                                   ? 'text-primary drop-shadow-sm' 
                                   : 'text-foreground/70 group-hover:text-foreground group-hover:scale-105'
@@ -274,7 +274,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                               `} />
                             </div>
                             <span className={`
-                              text-sm transition-all duration-300 font-medium flex-1 min-w-0 text-left
+                              text-sm transition-all-smooth font-medium flex-1 min-w-0 text-left
                               ${isSelected 
                                 ? 'text-primary font-semibold' 
                                 : 'text-foreground/80 group-hover:text-foreground'
@@ -291,7 +291,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                             <Badge 
                               variant="secondary" 
                               className={`
-                                text-xs font-bold transition-all duration-300 border
+                                text-xs font-bold transition-all-smooth border
                                 ${isSelected 
                                   ? 'bg-gradient-to-r from-primary/20 to-accent/20 border-primary/30 text-primary shadow-sm' 
                                   : 'bg-gradient-to-r from-white/15 to-white/10 border-white/25 text-foreground/70 group-hover:from-white/20 group-hover:to-white/15 group-hover:border-white/35 group-hover:text-foreground group-hover:shadow-sm'
@@ -325,16 +325,16 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                         variant="glass-secondary"
                         className="
                           w-full justify-start h-11 px-4 py-2.5 text-muted-foreground hover:text-primary 
-                          transition-glass font-medium border-dashed border-white/30 hover:border-primary/40
+                          transition-all-smooth font-medium border-dashed border-white/30 hover:border-primary/40
                           hover:bg-gradient-to-r hover:from-primary/8 hover:to-accent/8 hover:shadow-glass-sm
                           hover:scale-[1.005] hover:-translate-y-0.5 group relative overflow-hidden
                         "
                       >
                         <div className="flex items-center gap-3.5 relative z-10 min-w-0 flex-1">
-                          <div className="p-1.5 rounded-lg bg-white/10 group-hover:bg-primary/15 group-hover:shadow-sm transition-all duration-300 flex-shrink-0">
-                            <Plus className="h-4 w-4 transition-all duration-300 group-hover:scale-105" />
+                          <div className="p-1.5 rounded-lg bg-white/10 group-hover:bg-primary/15 group-hover:shadow-sm transition-all-smooth flex-shrink-0">
+                            <Plus className="h-4 w-4 transition-all-smooth group-hover:scale-105" />
                           </div>
-                          <span className="text-sm font-medium transition-all duration-300 flex-1 min-w-0 text-left">
+                          <span className="text-sm font-medium transition-all-smooth flex-1 min-w-0 text-left">
                             <span className="truncate block text-left">New Collection</span>
                           </span>
                         </div>
@@ -368,22 +368,22 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
               <DropdownMenuTrigger asChild>
                 <Button 
                   variant="glass-secondary" 
-                  className="w-full justify-between items-center h-14 px-4 py-3 transition-glass hover:shadow-glass-lg hover:scale-[1.01] hover:-translate-y-0.5 group"
+                  className="w-full justify-between items-center h-14 px-4 py-3 transition-all-smooth hover:shadow-glass-lg hover:scale-[1.01] hover:-translate-y-0.5 group"
                 >
                   <div className="flex items-center gap-4 min-w-0 flex-1">
                     {/* Enhanced Avatar with Status Indicator */}
                     <div className="relative flex-shrink-0">
-                      <Avatar className="h-10 w-10 ring-2 ring-white/30 shadow-glass-sm transition-all duration-300 group-hover:ring-white/50 group-hover:shadow-glass-md">
+                      <Avatar className="h-10 w-10 ring-2 ring-white/30 shadow-glass-sm transition-all-smooth group-hover:ring-white/50 group-hover:shadow-glass-md">
                         <AvatarImage 
                           src={user.user_metadata?.avatar_url} 
-                          className="object-cover transition-transform duration-300 group-hover:scale-105"
+                          className="object-cover transition-transform group-hover:scale-105"
                         />
                         <AvatarFallback className="bg-gradient-primary text-white text-sm font-bold shadow-inner">
                           {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'U'}
                         </AvatarFallback>
                       </Avatar>
                       {/* Online Status Indicator */}
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm transition-all duration-300 group-hover:scale-110">
+                      <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 border-2 border-white rounded-full shadow-sm transition-all-smooth group-hover:scale-110">
                         <div className="w-full h-full bg-green-400 rounded-full animate-pulse" />
                       </div>
                     </div>
@@ -391,7 +391,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                     {/* Enhanced User Information Layout */}
                     <div className="flex flex-col justify-center min-w-0 flex-1 space-y-0.5">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-foreground truncate tracking-tight transition-colors duration-300 group-hover:text-primary text-left">
+                        <span className="text-sm font-bold text-foreground truncate tracking-tight transition-colors-fast group-hover:text-primary text-left">
                           {user.user_metadata?.full_name || 'User'}
                         </span>
                         {/* User Status Badge - moved inline */}
@@ -402,7 +402,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                           </span>
                         </div>
                       </div>
-                      <span className="text-xs text-muted-foreground truncate font-medium tracking-wide transition-colors duration-300 group-hover:text-foreground/70 text-left">
+                      <span className="text-xs text-muted-foreground truncate font-medium tracking-wide transition-colors-fast group-hover:text-foreground/70 text-left">
                         {user.email}
                       </span>
                     </div>
@@ -410,7 +410,7 @@ export const CollectionsSidebar = ({ selectedCollection, onCollectionSelect }: C
                   
                   {/* Enhanced Chevron with Animation */}
                   <div className="flex items-center justify-center flex-shrink-0 ml-2">
-                    <ChevronUp className="h-4 w-4 text-muted-foreground transition-all duration-300 group-hover:text-foreground group-hover:scale-110 group-data-[state=open]:rotate-180" />
+                    <ChevronUp className="h-4 w-4 text-muted-foreground transition-all-smooth group-hover:text-foreground group-hover:scale-110 group-data-[state=open]:rotate-180" />
                   </div>
                 </Button>
               </DropdownMenuTrigger>

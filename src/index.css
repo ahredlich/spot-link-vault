@@ -74,13 +74,15 @@ All colors MUST be HSL.
     --gradient-accent: linear-gradient(135deg, hsl(220 100% 60% / 0.1), hsl(280 60% 65% / 0.1));
     
     /* Enhanced animation variables - optimized for performance */
-    --transition-glass: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-glass-hover: transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-glass: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glass-hover: transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), box-shadow 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), background-color 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), border-color 0.22s cubic-bezier(0.25, 0.1, 0.25, 1), color 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
     --transition-scale: transform 0.22s cubic-bezier(0.25, 0.1, 0.25, 1);
     --transition-fade: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slide: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-shadow: box-shadow 0.22s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-performance: transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-colors: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-colors-fast: background-color 0.18s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.18s cubic-bezier(0.4, 0, 0.2, 1), color 0.18s cubic-bezier(0.4, 0, 0.2, 1);
     
     /* Optimized animation timing */
     --animation-duration-fast: 0.12s;
@@ -850,6 +852,18 @@ All colors MUST be HSL.
 
   .transition-shadow {
     transition: var(--transition-shadow);
+  }
+
+  .transition-colors {
+    transition: var(--transition-colors);
+  }
+
+  .transition-colors-fast {
+    transition: var(--transition-colors-fast);
+  }
+
+  .transition-all-smooth {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   /* GPU acceleration utilities */

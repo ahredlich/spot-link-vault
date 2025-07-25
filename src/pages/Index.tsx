@@ -584,7 +584,8 @@ const BookmarkManager = () => {
       setQuickFilter(null);
       setSearchQuery("");
     } else {
-      setQuickFilter(filter);
+      // Toggle the filter - if it's already active, turn it off
+      setQuickFilter(quickFilter === filter ? null : filter);
     }
   };
 
@@ -643,9 +644,6 @@ const BookmarkManager = () => {
                   <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                     Bookmarks
                   </h1>
-                  <p className="text-lg text-muted-foreground">
-                    Your personal link collection and knowledge base
-                  </p>
                 </div>
               </div>
 
@@ -700,13 +698,7 @@ const BookmarkManager = () => {
                     <span className="font-medium">in {selectedCollection}</span>
                   </div>
                 )}
-                {quickFilter && (
-                  <div className="flex items-center gap-2 text-primary">
-                    {quickFilter === 'favorites' && <Star className="h-5 w-5" />}
-                    {quickFilter === 'recent' && <Clock className="h-5 w-5" />}
-                    <span className="font-medium">{quickFilter === 'favorites' ? 'Favorites' : 'Recent'} filter active</span>
-                  </div>
-                )}
+
               </div>
 
               <div className="flex items-center gap-6 text-base">
@@ -741,25 +733,34 @@ const BookmarkManager = () => {
                   totalCount={mockBookmarks.length}
                   onQuickFilter={handleQuickFilter}
                   showQuickFilters={searchQuery.length === 0 && !quickFilter}
+                  activeQuickFilter={quickFilter}
                 />
               </div>
               
               {/* Quick Action Buttons */}
               <div className="flex items-center gap-3">
                 <Button
-                  variant="glass-secondary"
+                  variant={quickFilter === 'favorites' ? "default" : "glass-secondary"}
                   size="lg"
                   onClick={() => handleQuickFilter('favorites')}
-                  className={`gap-2 h-12 px-4 ${quickFilter === 'favorites' ? 'bg-primary/20 text-primary' : ''}`}
+                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                    quickFilter === 'favorites' 
+                      ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg scale-105" 
+                      : "hover:scale-105"
+                  }`}
                 >
-                  <Star className="h-5 w-5" />
+                  <Star className={`h-5 w-5 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
                   <span className="hidden sm:inline">Favorites</span>
                 </Button>
                 <Button
-                  variant="glass-secondary"
+                  variant={quickFilter === 'recent' ? "default" : "glass-secondary"}
                   size="lg"
                   onClick={() => handleQuickFilter('recent')}
-                  className={`gap-2 h-12 px-4 ${quickFilter === 'recent' ? 'bg-primary/20 text-primary' : ''}`}
+                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                    quickFilter === 'recent' 
+                      ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg scale-105" 
+                      : "hover:scale-105"
+                  }`}
                 >
                   <Clock className="h-5 w-5" />
                   <span className="hidden sm:inline">Recent</span>
@@ -770,22 +771,8 @@ const BookmarkManager = () => {
             {/* Row 4 - Active Filters and Secondary Actions */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 flex-wrap">
-                {/* Active Filter Indicators */}
-                {quickFilter && (
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary">
-                    {quickFilter === 'favorites' && <Star className="h-5 w-5" />}
-                    {quickFilter === 'recent' && <Clock className="h-5 w-5" />}
-                    <span className="capitalize font-semibold text-lg">{quickFilter} Active</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setQuickFilter(null)}
-                      className="h-6 w-6 p-0 ml-2 hover:bg-primary/20 rounded-full"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
-                )}
+                {/* Quick Filter Indicators - Removed */}
+
 
                 {selectedCollection !== "All" && (
                   <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent">
@@ -793,11 +780,7 @@ const BookmarkManager = () => {
                     <span className="font-semibold text-lg">{selectedCollection} Collection</span>
                   </div>
                 )}
-
-
               </div>
-
-
             </div>
           </div>
         </header>
