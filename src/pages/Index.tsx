@@ -726,9 +726,9 @@ const BookmarkManager = () => {
             </div>
 
             {/* Row 3 - Search and Primary Filters */}
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-4">
               {/* Enhanced Search - Full width with larger size */}
-              <div className="flex-1 max-w-2xl">
+              <div className="flex-1 max-w-xl">
                 <EnhancedSearchInput
                   value={searchQuery}
                   onChange={setSearchQuery}
@@ -742,46 +742,43 @@ const BookmarkManager = () => {
               </div>
               
               {/* Quick Action Buttons */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Button
                   variant={quickFilter === 'favorites' ? "default" : "glass-secondary"}
-                  size="lg"
+                  size="sm"
                   onClick={() => handleQuickFilter('favorites')}
-                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                  className={`gap-1 h-8 px-3 transition-all duration-200 ${
                     quickFilter === 'favorites' 
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Star className={`h-5 w-5 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
-                  <span className="hidden sm:inline">Favorites</span>
+                  <Star className={`h-3 w-3 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
+                  <span className="hidden sm:inline text-xs">Favorites</span>
                 </Button>
                 <Button
                   variant={quickFilter === 'recent' ? "default" : "glass-secondary"}
-                  size="lg"
+                  size="sm"
                   onClick={() => handleQuickFilter('recent')}
-                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                  className={`gap-1 h-8 px-3 transition-all duration-200 ${
                     quickFilter === 'recent' 
                       ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Clock className="h-5 w-5" />
-                  <span className="hidden sm:inline">Recent</span>
+                  <Clock className="h-3 w-3" />
+                  <span className="hidden sm:inline text-xs">Recent</span>
                 </Button>
               </div>
             </div>
 
             {/* Row 4 - Active Filters and Secondary Actions */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 flex-wrap">
-                {/* Quick Filter Indicators - Removed */}
-
-
+              <div className="flex items-center gap-2 flex-wrap">
                 {selectedCollection !== "All" && (
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent">
-                    <Tag className="h-5 w-5" />
-                    <span className="font-semibold text-lg">{selectedCollection} Collection</span>
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-lg bg-accent/10 border border-accent/20 text-accent">
+                    <Tag className="h-3 w-3" />
+                    <span className="font-medium text-sm">{selectedCollection} Collection</span>
                   </div>
                 )}
               </div>
