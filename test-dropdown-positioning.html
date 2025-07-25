@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dropdown Positioning Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            min-height: 100vh;
+        }
+        
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            overflow: visible;
+        }
+        
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: visible;
+        }
+        
+        .search-dropdown-container {
+            position: relative;
+            z-index: 1000;
+            max-width: 300px;
+            flex: 1;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(12px);
+        }
+        
+        .search-dropdown-content {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 4px;
+            z-index: 1001;
+            transform: translateZ(0);
+            will-change: transform;
+        }
+        
+        .dropdown-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 8px;
+        }
+        
+        .dropdown-item {
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        
+        .content {
+            padding: 20px;
+            height: 200vh; /* Make content tall to test scrolling */
+        }
+        
+        .test-button {
+            padding: 8px 16px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Dropdown Test</h1>
+            
+            <div class="search-dropdown-container">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Search..." 
+                    id="searchInput"
+                    onfocus="showDropdown()"
+                    onblur="hideDropdown()"
+                >
+                
+                <div class="search-dropdown-content" id="dropdown" style="display: none;">
+                    <div class="dropdown-content">
+                        <div class="dropdown-item">🌟 Favorites</div>
+                        <div class="dropdown-item">🕒 Recent</div>
+                        <div class="dropdown-item">🗂️ Collections</div>
+                        <div class="dropdown-item">🏷️ Tags</div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="test-button">Add Item</button>
+        </div>
+    </div>
+    
+    <div class="content">
+        <h2>Test Content</h2>
+        <p>This content should scroll normally while the header remains sticky.</p>
+        <p>The dropdown should appear below the search input and be fully visible.</p>
+        <p>Scroll down to test that the dropdown positioning works correctly even when the page is scrolled.</p>
+        
+        <div style="margin-top: 50px;">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Click on the search input above</li>
+                <li>The dropdown should appear below it</li>
+                <li>All dropdown items should be fully visible</li>
+                <li>Scroll the page and test again</li>
+                <li>The dropdown should still work correctly</li>
+            </ol>
+        </div>
+        
+        <div style="margin-top: 100px; padding: 20px; background: rgba(255, 255, 255, 0.5); border-radius: 8px;">
+            <h3>Expected Behavior:</h3>
+            <ul>
+                <li>✅ Dropdown appears immediately below search input</li>
+                <li>✅ All dropdown items are fully visible</li>
+                <li>✅ Dropdown has proper z-index layering</li>
+                <li>✅ No clipping or cut-off issues</li>
+                <li>✅ Works correctly when page is scrolled</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let hideTimeout;
+        
+        function showDropdown() {
+            clearTimeout(hideTimeout);
+            document.getElementById('dropdown').style.display = 'block';
+        }
+        
+        function hideDropdown() {
+            hideTimeout = setTimeout(() => {
+                document.getElementById('dropdown').style.display = 'none';
+            }, 150);
+        }
+        
+        // Prevent dropdown from hiding when clicking on it
+        document.getElementById('dropdown').addEventListener('mousedown', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>

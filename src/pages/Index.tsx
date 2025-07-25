@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Upload, Menu, Star, Shield, Zap, Download, Heart, BookOpen, Users, Sparkles } from "lucide-react";
+import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Menu, Star, Shield, Zap, Heart, BookOpen, Users, Sparkles, Clock, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -10,6 +10,8 @@ import { AddBookmarkDialog } from "@/components/AddBookmarkDialog";
 import { CollectionsSidebar } from "@/components/CollectionsSidebar";
 import { BookmarkCardSkeleton, SidebarSkeleton } from "@/components/LoadingSkeleton";
 import { PerformanceTestDialog } from "@/components/PerformanceTestDialog";
+import { EnhancedSearchInput } from "@/components/EnhancedSearchInput";
+import { ViewToggle } from "@/components/ViewToggle";
 import { useAuth } from "@/hooks/useAuth";
 import { useStaggeredAnimation, useStaggeredFadeIn } from "@/hooks/useStaggeredAnimation";
 import { useZoomPerformance } from "@/hooks/useZoomPerformance";
@@ -544,6 +546,7 @@ const BookmarkManager = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [performanceMonitoringEnabled, setPerformanceMonitoringEnabled] = useState(false);
   const [isPerformanceTestOpen, setIsPerformanceTestOpen] = useState(false);
+  const [quickFilter, setQuickFilter] = useState<'favorites' | 'recent' | null>(null);
 
   // Zoom performance optimization
   const { isZooming, shouldReduceAnimations } = useZoomPerformance();
@@ -562,8 +565,28 @@ const BookmarkManager = () => {
     
     const matchesCollection = selectedCollection === "All" || bookmark.collection === selectedCollection;
     
-    return matchesSearch && matchesCollection;
+    // Apply quick filters
+    let matchesQuickFilter = true;
+    if (quickFilter === 'favorites') {
+      matchesQuickFilter = bookmark.isFavorite;
+    } else if (quickFilter === 'recent') {
+      // Show bookmarks from the last 7 days
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      matchesQuickFilter = bookmark.createdAt >= weekAgo;
+    }
+    
+    return matchesSearch && matchesCollection && matchesQuickFilter;
   });
+
+  const handleQuickFilter = (filter: 'favorites' | 'recent' | 'clear') => {
+    if (filter === 'clear') {
+      setQuickFilter(null);
+      setSearchQuery("");
+    } else {
+      setQuickFilter(filter);
+    }
+  };
 
   // Use staggered animation for bookmark cards with performance optimizations
   const bookmarkAnimation = useStaggeredAnimation(filteredBookmarks.length, {
@@ -600,92 +623,181 @@ const BookmarkManager = () => {
       </Sheet>
 
       {/* Main Content - Account for Fixed Sidebar */}
-      <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
-        {/* Header */}
-        <header className="sticky top-0 z-10 glass-card-secondary border-b border-white/10">
-          <div className="flex items-center justify-between p-3 sm:p-4 w-full">
-            <div className="flex items-center gap-2 sm:gap-4 flex-1 min-w-0">
-              {/* Mobile Menu Button */}
-              <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
-                <SheetTrigger asChild>
-                  <Button variant="glass-secondary" size="icon" className="lg:hidden h-8 w-8">
-                    <Menu className="h-4 w-4" />
+<div className="flex-1 flex flex-col min-w-0 lg:ml-64 overflow-visible">
+        {/* Header - Quadruple Height Ultra Expanded */}
+        <header className="sticky top-0 z-30 glass-card-secondary border-b border-white/10 overflow-visible">
+          <div className="p-6 sm:p-8 w-full relative overflow-visible space-y-6">
+            {/* Row 1 - Main Title and Primary Actions */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4 sm:gap-6">
+                {/* Mobile Menu Button */}
+                <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
+                  <SheetTrigger asChild>
+                    <Button variant="glass-secondary" size="icon" className="lg:hidden h-12 w-12">
+                      <Menu className="h-6 w-6" />
+                    </Button>
+                  </SheetTrigger>
+                </Sheet>
+                
+                <div className="flex flex-col space-y-2">
+                  <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    Bookmarks
+                  </h1>
+                  <p className="text-lg text-muted-foreground">
+                    Your personal link collection and knowledge base
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 sm:gap-4">
+                {/* Performance Monitoring Toggle (for debugging) */}
+                {process.env.NODE_ENV === 'development' && (
+                  <Button
+                    variant={performanceMonitoringEnabled ? "default" : "ghost"}
+                    size="lg"
+                    onClick={() => setPerformanceMonitoringEnabled(!performanceMonitoringEnabled)}
+                    className={`h-12 w-12 p-0 transition-all duration-300 ${
+                      performanceMonitoringEnabled 
+                        ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105" 
+                        : "hover:bg-white/20 text-foreground/70"
+                    }`}
+                    title="Toggle Performance Monitoring"
+                  >
+                    <Zap className="h-6 w-6" />
                   </Button>
-                </SheetTrigger>
-              </Sheet>
-              
-              <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Bookmarks
-              </h1>
-              
-              {/* Search */}
-              <div className="relative flex-1 max-w-xs sm:max-w-sm">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 search-glass-glow text-sm"
+                )}
+                
+                {/* Enhanced View Toggle */}
+                <ViewToggle 
+                  viewMode={viewMode} 
+                  onViewModeChange={setViewMode}
                 />
+
+                {/* Add Bookmark - Primary Action */}
+                <Button
+                  variant="default"
+                  onClick={() => setIsAddDialogOpen(true)}
+                  className="gap-3 text-lg h-12 px-6 sm:px-8 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+                >
+                  <Plus className="h-6 w-6" />
+                  <span>Add Bookmark</span>
+                </Button>
               </div>
             </div>
 
-            <div className="flex items-center gap-1 sm:gap-2">
-              {/* Performance Monitoring Toggle (for debugging) */}
-              {process.env.NODE_ENV === 'development' && (
-                <Button
-                  variant={performanceMonitoringEnabled ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setPerformanceMonitoringEnabled(!performanceMonitoringEnabled)}
-                  className={`h-7 w-7 sm:h-8 sm:w-8 p-0 transition-all duration-300 ${
-                    performanceMonitoringEnabled 
-                      ? "bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg scale-105" 
-                      : "hover:bg-white/20 text-foreground/70"
-                  }`}
-                  title="Toggle Performance Monitoring"
-                >
-                  <Zap className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
-              )}
-              
-              {/* View Toggle */}
-              <div className="flex items-center rounded-lg p-1 backdrop-blur-xl bg-gradient-to-r from-white/20 to-white/10 border border-white/30 shadow-lg">
-                <Button
-                  variant={viewMode === "grid" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("grid")}
-                  className={`h-7 w-7 sm:h-8 sm:w-8 p-0 transition-all duration-300 ${
-                    viewMode === "grid" 
-                      ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg scale-105" 
-                      : "hover:bg-white/20 text-foreground/70"
-                  }`}
-                >
-                  <Grid className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
-                <Button
-                  variant={viewMode === "list" ? "default" : "ghost"}
-                  size="sm"
-                  onClick={() => setViewMode("list")}
-                  className={`h-7 w-7 sm:h-8 sm:w-8 p-0 transition-all duration-300 ${
-                    viewMode === "list" 
-                      ? "bg-gradient-to-r from-primary to-accent text-white shadow-lg scale-105" 
-                      : "hover:bg-white/20 text-foreground/70"
-                  }`}
-                >
-                  <List className="h-3 w-3 sm:h-4 sm:w-4" />
-                </Button>
+            {/* Row 2 - Statistics and Overview */}
+            <div className="flex items-center justify-between bg-gradient-glass-tertiary rounded-xl p-4 border border-white/10">
+              <div className="flex items-center gap-6 text-base">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 bg-primary rounded-full"></div>
+                  <span className="font-semibold text-foreground">
+                    {filteredBookmarks.length} of {mockBookmarks.length} bookmarks
+                  </span>
+                </div>
+                {selectedCollection !== "All" && (
+                  <div className="flex items-center gap-2 text-accent">
+                    <Tag className="h-5 w-5" />
+                    <span className="font-medium">in {selectedCollection}</span>
+                  </div>
+                )}
+                {quickFilter && (
+                  <div className="flex items-center gap-2 text-primary">
+                    {quickFilter === 'favorites' && <Star className="h-5 w-5" />}
+                    {quickFilter === 'recent' && <Clock className="h-5 w-5" />}
+                    <span className="font-medium">{quickFilter === 'favorites' ? 'Favorites' : 'Recent'} filter active</span>
+                  </div>
+                )}
               </div>
 
-              {/* Add Bookmark */}
-              <Button
-                variant="default"
-                onClick={() => setIsAddDialogOpen(true)}
-                className="gap-1 sm:gap-2 text-xs sm:text-sm h-8 px-2 sm:px-4 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              >
-                <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="hidden sm:inline">Add Bookmark</span>
-                <span className="sm:hidden">Add</span>
-              </Button>
+              <div className="flex items-center gap-6 text-base">
+                <div className="flex items-center gap-2">
+                  <Heart className="h-5 w-5 text-red-500" />
+                  <span className="font-medium">{mockBookmarks.filter(b => b.isFavorite).length} favorites</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-5 w-5 text-green-500" />
+                  <span className="font-medium">{mockBookmarks.filter(b => b.isRead).length} read</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5 text-blue-500" />
+                  <span className="font-medium">{mockBookmarks.filter(b => {
+                    const weekAgo = new Date();
+                    weekAgo.setDate(weekAgo.getDate() - 7);
+                    return b.createdAt >= weekAgo;
+                  }).length} this week</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Row 3 - Search and Primary Filters */}
+            <div className="flex items-center gap-4 sm:gap-6">
+              {/* Enhanced Search - Full width with larger size */}
+              <div className="flex-1 max-w-2xl">
+                <EnhancedSearchInput
+                  value={searchQuery}
+                  onChange={setSearchQuery}
+                  showResultsCount={searchQuery.length > 0 || quickFilter !== null}
+                  resultsCount={filteredBookmarks.length}
+                  totalCount={mockBookmarks.length}
+                  onQuickFilter={handleQuickFilter}
+                  showQuickFilters={searchQuery.length === 0 && !quickFilter}
+                />
+              </div>
+              
+              {/* Quick Action Buttons */}
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="glass-secondary"
+                  size="lg"
+                  onClick={() => handleQuickFilter('favorites')}
+                  className={`gap-2 h-12 px-4 ${quickFilter === 'favorites' ? 'bg-primary/20 text-primary' : ''}`}
+                >
+                  <Star className="h-5 w-5" />
+                  <span className="hidden sm:inline">Favorites</span>
+                </Button>
+                <Button
+                  variant="glass-secondary"
+                  size="lg"
+                  onClick={() => handleQuickFilter('recent')}
+                  className={`gap-2 h-12 px-4 ${quickFilter === 'recent' ? 'bg-primary/20 text-primary' : ''}`}
+                >
+                  <Clock className="h-5 w-5" />
+                  <span className="hidden sm:inline">Recent</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Row 4 - Active Filters and Secondary Actions */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-wrap">
+                {/* Active Filter Indicators */}
+                {quickFilter && (
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-primary/10 border border-primary/20 text-primary">
+                    {quickFilter === 'favorites' && <Star className="h-5 w-5" />}
+                    {quickFilter === 'recent' && <Clock className="h-5 w-5" />}
+                    <span className="capitalize font-semibold text-lg">{quickFilter} Active</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setQuickFilter(null)}
+                      className="h-6 w-6 p-0 ml-2 hover:bg-primary/20 rounded-full"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+
+                {selectedCollection !== "All" && (
+                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent">
+                    <Tag className="h-5 w-5" />
+                    <span className="font-semibold text-lg">{selectedCollection} Collection</span>
+                  </div>
+                )}
+
+
+              </div>
+
+
             </div>
           </div>
         </header>
@@ -730,13 +842,16 @@ const BookmarkManager = () => {
         )}
 
         {/* Content */}
-        <main className="flex-1 p-3 sm:p-6 w-full overflow-auto scrollbar-primary max-h-screen">
+        <main className="flex-1 p-3 sm:p-6 w-full overflow-auto scrollbar-primary">
           {isLoading ? (
-            <div className={
-              viewMode === "grid" 
-                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized" 
-                : "space-y-3 sm:space-y-4 bookmark-list-container"
-            }>
+            <div 
+              key={`loading-${viewMode}`}
+              className={`view-transition-enter ${
+                viewMode === "grid" 
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized" 
+                  : "space-y-3 sm:space-y-4 bookmark-list-container"
+              }`}
+            >
               {Array.from({ length: 8 }).map((_, i) => (
                 <BookmarkCardSkeleton key={i} viewMode={viewMode} />
               ))}
@@ -745,9 +860,20 @@ const BookmarkManager = () => {
             <div className="flex flex-col items-center justify-center py-8 sm:py-12">
               <div className="glass-card p-6 sm:p-8 text-center max-w-md mx-auto">
                 <Bookmark className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 text-muted-foreground" />
-                <h3 className="text-base sm:text-lg font-semibold mb-2">No bookmarks found</h3>
+                <h3 className="text-base sm:text-lg font-semibold mb-2">
+                  {searchQuery || quickFilter ? "No bookmarks found" : "No bookmarks yet"}
+                </h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {searchQuery ? "Try adjusting your search terms" : "Start by adding your first bookmark"}
+                  {searchQuery 
+                    ? `No results for "${searchQuery}". Try different keywords or check your spelling.`
+                    : quickFilter === 'favorites'
+                    ? "You haven't marked any bookmarks as favorites yet."
+                    : quickFilter === 'recent'
+                    ? "No bookmarks added in the last 7 days."
+                    : selectedCollection !== "All"
+                    ? `No bookmarks in the "${selectedCollection}" collection yet.`
+                    : "Start building your bookmark collection by adding your first link."
+                  }
                 </p>
                 <Button variant="glass-primary" onClick={() => setIsAddDialogOpen(true)} className="text-sm">
                   <Plus className="h-4 w-4 mr-2" />
@@ -758,12 +884,13 @@ const BookmarkManager = () => {
           ) : (
             <>
               <div 
+                key={`bookmarks-${viewMode}`}
                 ref={bookmarkAnimation.containerRef}
-                className={
+                className={`view-transition-enter ${
                   viewMode === "grid" 
                     ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 card-container-optimized card-grid-container" 
                     : "space-y-3 sm:space-y-4 bookmark-list-container"
-                }
+                }`}
               >
               {filteredBookmarks.map((bookmark, index) => {
                 const itemProps = bookmarkAnimation.getItemProps(index);

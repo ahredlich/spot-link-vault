@@ -559,6 +559,52 @@ All colors MUST be HSL.
     outline: none;
   }
 
+  /* Enhanced Search Input Styles */
+  .search-glass-enhanced {
+    @apply backdrop-blur-xl border border-white/20;
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.9), 
+      hsla(240, 20%, 98%, 0.7)
+    );
+    box-shadow: var(--shadow-glass-sm);
+    border-radius: 10px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+  }
+
+  .search-glass-enhanced:hover {
+    border-color: hsl(var(--primary) / 0.3);
+    box-shadow: var(--shadow-glass-md);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.95), 
+      hsla(240, 20%, 98%, 0.8)
+    );
+  }
+
+  .search-glass-focused {
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2), 
+                0 0 20px hsl(var(--primary) / 0.15),
+                0 0 40px hsl(var(--primary) / 0.08),
+                var(--shadow-glass-lg);
+    border-color: hsl(var(--primary) / 0.5);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.98), 
+      hsla(240, 20%, 98%, 0.85)
+    );
+    outline: none;
+  }
+
+  .search-glass-active {
+    border-color: hsl(var(--primary) / 0.4);
+    background: linear-gradient(135deg, 
+      hsla(240, 20%, 100%, 0.95), 
+      hsla(240, 20%, 98%, 0.8)
+    );
+  }
+
   /* Optimized Shimmer Effect - Enhanced performance with GPU acceleration */
   .shimmer-effect {
     position: relative;
@@ -2093,6 +2139,119 @@ All colors MUST be HSL.
     will-change: transform;
   }
 
+  /* Search dropdown positioning fix */
+  .search-dropdown-container {
+    position: relative;
+    z-index: 1000;
+  }
+
+  .search-dropdown-content {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 4px;
+    z-index: 1001;
+    /* Ensure dropdown escapes any overflow constraints */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  /* Ultra-expanded header styles */
+  .ultra-expanded-header {
+    min-height: 240px;
+    transition: var(--transition-glass);
+  }
+
+  .ultra-expanded-header .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 60px;
+    padding: 1rem 0;
+  }
+
+  .ultra-expanded-header .header-stats-panel {
+    background: var(--gradient-glass-tertiary);
+    border: 1px solid hsl(var(--border) / 0.1);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    backdrop-filter: blur(12px);
+    transition: var(--transition-glass);
+  }
+
+  .ultra-expanded-header .header-stats-panel:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-glass-md);
+  }
+
+  .ultra-expanded-header .filter-badge-large {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    transition: var(--transition-glass);
+    backdrop-filter: blur(12px);
+  }
+
+  .ultra-expanded-header .filter-badge-large:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glass-lg);
+  }
+
+  .ultra-expanded-header .action-button-large {
+    height: 3rem;
+    padding: 0 1.5rem;
+    font-size: 1.125rem;
+    font-weight: 600;
+    gap: 0.75rem;
+    transition: var(--transition-glass);
+  }
+
+  .ultra-expanded-header .action-button-large:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-glass-xl);
+  }
+
+  .ultra-expanded-header .stats-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+  }
+
+  .ultra-expanded-header .stats-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+  }
+
+  /* Ultra-expanded search input styles */
+  .ultra-expanded-header .search-dropdown-container input {
+    height: 3rem;
+    font-size: 1.125rem;
+    padding: 0.75rem 3rem 0.75rem 3rem;
+    border-radius: 0.75rem;
+  }
+
+  .ultra-expanded-header .search-dropdown-container .lucide-search {
+    width: 1.25rem;
+    height: 1.25rem;
+    left: 1rem;
+  }
+
+  .ultra-expanded-header .search-dropdown-container .lucide-x {
+    width: 1rem;
+    height: 1rem;
+    right: 1rem;
+  }
+
   /* User info typography enhancements */
   .user-name-enhanced {
     font-weight: 700;
@@ -2382,3 +2541,162 @@ All colors MUST be HSL.
     }
   }
 }
+  /* E
+nhanced View Toggle Component Styles */
+  .view-toggle-group {
+    @apply flex items-center rounded-lg p-1 backdrop-blur-xl border shadow-lg;
+    background: var(--gradient-glass-primary);
+    border-color: hsl(var(--glass-border-primary) / 0.6);
+    box-shadow: var(--shadow-glass-md);
+    transition: var(--transition-glass);
+    /* GPU acceleration optimizations */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+    contain: layout style paint;
+  }
+
+  .view-toggle-group:hover {
+    box-shadow: var(--shadow-glass-lg);
+    transform: translateY(-1px) translateZ(0);
+    transition: var(--transition-glass-hover);
+    will-change: transform;
+  }
+
+  .view-toggle-button {
+    @apply h-7 w-7 sm:h-8 sm:w-8 p-0 rounded-md;
+    transition: var(--transition-glass);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    isolation: isolate;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .view-toggle-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    transition: var(--transition-glass);
+    border-radius: inherit;
+    z-index: -1;
+  }
+
+  .view-toggle-active {
+    background: var(--gradient-primary);
+    color: hsl(var(--primary-foreground));
+    box-shadow: var(--shadow-glass-md);
+    transform: scale(1.05) translateZ(0);
+    border: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  .view-toggle-active::before {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary) / 0.1), 
+      hsl(var(--accent) / 0.1)
+    );
+  }
+
+  .view-toggle-active:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--primary)), 
+      hsl(var(--accent))
+    );
+    box-shadow: var(--shadow-glass-lg);
+    transform: scale(1.08) translateZ(0);
+    will-change: transform;
+  }
+
+  .view-toggle-inactive {
+    background: transparent;
+    color: hsl(var(--foreground) / 0.7);
+    border: 1px solid transparent;
+  }
+
+  .view-toggle-inactive:hover {
+    background: linear-gradient(135deg, 
+      hsl(var(--glass-bg-primary) / 0.8), 
+      hsl(var(--glass-bg-secondary) / 0.6)
+    );
+    color: hsl(var(--foreground));
+    box-shadow: var(--shadow-glass-sm);
+    transform: scale(1.02) translateZ(0);
+    border-color: hsl(var(--glass-border-primary) / 0.4);
+    will-change: transform;
+  }
+
+  .view-toggle-button:focus-visible {
+    @apply ring-2 ring-offset-2;
+    ring-color: hsl(var(--primary));
+    outline: none;
+  }
+
+  /* Enhanced focus states for accessibility */
+  .view-toggle-active:focus-visible {
+    ring-color: hsl(var(--primary-foreground));
+    ring-offset-color: hsl(var(--primary));
+  }
+
+  .view-toggle-inactive:focus-visible {
+    ring-color: hsl(var(--primary));
+    ring-offset-color: hsl(var(--background));
+  }
+
+  /* Smooth view transition effects */
+  .view-transition-enter {
+    animation: viewTransitionEnter var(--animation-duration-normal) var(--ease-smooth);
+  }
+
+  .view-transition-exit {
+    animation: viewTransitionExit var(--animation-duration-normal) var(--ease-smooth);
+  }
+
+  @keyframes viewTransitionEnter {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98) translateZ(0);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) translateZ(0);
+    }
+  }
+
+  @keyframes viewTransitionExit {
+    0% {
+      opacity: 1;
+      transform: translateY(0) scale(1) translateZ(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.98) translateZ(0);
+    }
+  }
+
+  /* Reduced motion support for view toggle */
+  @media (prefers-reduced-motion: reduce) {
+    .view-toggle-group,
+    .view-toggle-button,
+    .view-toggle-active,
+    .view-toggle-inactive {
+      transition: none;
+      animation: none;
+      transform: none;
+    }
+    
+    .view-toggle-group:hover,
+    .view-toggle-button:hover,
+    .view-toggle-active:hover,
+    .view-toggle-inactive:hover {
+      transform: none;
+    }
+    
+    .view-transition-enter,
+    .view-transition-exit {
+      animation: none;
+    }
+  }
