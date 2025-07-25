@@ -39,7 +39,7 @@ export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
   const isSearching = hasValue;
 
   return (
-    <div className="relative flex-1 max-w-xs sm:max-w-sm">
+    <div className="relative flex-1 max-w-xs sm:max-w-sm search-dropdown-container">
       <div className={cn(
         "relative group",
         className
@@ -88,8 +88,8 @@ export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
       
       {/* Quick Filter Buttons */}
       {showQuickFilters && onQuickFilter && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-20">
-          <div className="glass-card-secondary p-2 border border-white/10 rounded-md shadow-lg backdrop-blur-xl">
+        <div className="search-dropdown-content">
+          <div className="glass-card-secondary p-2 border border-white/10 rounded-md shadow-lg backdrop-blur-xl dropdown-glass-enhanced">
             <div className="flex gap-1">
               <Button
                 variant="ghost"
@@ -124,8 +124,8 @@ export const EnhancedSearchInput: React.FC<EnhancedSearchInputProps> = ({
       
       {/* Search Results Summary */}
       {showResultsCount && (isSearching || resultsCount !== totalCount) && (
-        <div className="absolute top-full left-0 right-0 mt-1 z-10">
-          <div className="glass-card-secondary px-3 py-2 text-xs text-muted-foreground border border-white/10 rounded-md shadow-lg backdrop-blur-xl">
+        <div className="search-dropdown-content">
+          <div className="glass-card-secondary px-3 py-2 text-xs text-muted-foreground border border-white/10 rounded-md shadow-lg backdrop-blur-xl dropdown-glass-enhanced">
             {resultsCount === 0 ? (
               <span className="text-amber-600">
                 {isSearching ? `No results found for "${value}"` : "No bookmarks match current filters"}
