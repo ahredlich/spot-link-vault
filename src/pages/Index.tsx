@@ -684,42 +684,42 @@ const BookmarkManager = () => {
             </div>
 
             {/* Row 2 - Statistics and Overview */}
-            <div className="glass-card bg-gradient-subtle p-6 rounded-2xl border border-primary/20 shadow-glass-lg backdrop-blur-xl">
+            <div className="glass-card bg-gradient-subtle p-4 rounded-xl border border-primary/20 shadow-glass-lg backdrop-blur-xl">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-8">
-                  <div className="flex items-center gap-3">
-                    <div className="w-4 h-4 bg-gradient-primary rounded-full shadow-glass-sm"></div>
-                    <span className="font-bold text-lg bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 bg-gradient-primary rounded-full shadow-glass-sm"></div>
+                    <span className="font-semibold text-base bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {filteredBookmarks.length} of {mockBookmarks.length} bookmarks
                     </span>
                   </div>
                   {selectedCollection !== "All" && (
-                    <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-accent/15 border border-accent/25">
-                      <Tag className="h-5 w-5 text-accent" />
-                      <span className="font-semibold text-accent">in {selectedCollection}</span>
+                    <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-accent/15 border border-accent/25">
+                      <Tag className="h-4 w-4 text-accent" />
+                      <span className="font-medium text-sm text-accent">in {selectedCollection}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="flex items-center gap-8">
-                  <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20">
-                    <Heart className="h-5 w-5 text-red-500 fill-current" />
-                    <span className="font-semibold text-red-500">{mockBookmarks.filter(b => b.isFavorite).length}</span>
-                    <span className="text-muted-foreground font-medium">favorites</span>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20">
+                    <Heart className="h-4 w-4 text-red-500 fill-current" />
+                    <span className="font-semibold text-sm text-red-500">{mockBookmarks.filter(b => b.isFavorite).length}</span>
+                    <span className="text-muted-foreground text-sm">favorites</span>
                   </div>
-                  <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
-                    <BookOpen className="h-5 w-5 text-green-500" />
-                    <span className="font-semibold text-green-500">{mockBookmarks.filter(b => b.isRead).length}</span>
-                    <span className="text-muted-foreground font-medium">read</span>
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                    <BookOpen className="h-4 w-4 text-green-500" />
+                    <span className="font-semibold text-sm text-green-500">{mockBookmarks.filter(b => b.isRead).length}</span>
+                    <span className="text-muted-foreground text-sm">read</span>
                   </div>
-                  <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
-                    <Calendar className="h-5 w-5 text-blue-500" />
-                    <span className="font-semibold text-blue-500">{mockBookmarks.filter(b => {
+                  <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                    <Calendar className="h-4 w-4 text-blue-500" />
+                    <span className="font-semibold text-sm text-blue-500">{mockBookmarks.filter(b => {
                       const weekAgo = new Date();
                       weekAgo.setDate(weekAgo.getDate() - 7);
                       return b.createdAt >= weekAgo;
                     }).length}</span>
-                    <span className="text-muted-foreground font-medium">this week</span>
+                    <span className="text-muted-foreground text-sm">this week</span>
                   </div>
                 </div>
               </div>
