@@ -627,7 +627,7 @@ const BookmarkManager = () => {
 <div className="flex-1 flex flex-col min-w-0 lg:ml-64 overflow-visible">
         {/* Header - Quadruple Height Ultra Expanded */}
         <header className="sticky top-0 z-30 glass-card-secondary border-b border-white/10 overflow-visible">
-          <div className="p-6 sm:p-8 w-full relative overflow-visible space-y-6">
+          <div className="p-4 sm:p-5 w-full relative overflow-visible space-y-4">
             {/* Row 1 - Main Title and Primary Actions */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 sm:gap-6">
