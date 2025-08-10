@@ -14,14 +14,15 @@ export default defineConfig(({ mode }) => ({
       console.log('[Vite] Cleaning up resources...');
     },
     hmr: {
-      // Configure HMR with proper cleanup
+      // Configure HMR with proper reconnection handling
       overlay: true,
       protocol: 'ws',
       host: 'localhost',
       port: 8080,
-      timeout: 120000,
-      // Cleanup handler for HMR connections
+      timeout: 30000,
+      // Prevent excessive reconnection attempts
       clientPort: 8080,
+      skipSSRBuild: true,
     },
     cors: {
       // CORS configuration to handle connection cleanup
