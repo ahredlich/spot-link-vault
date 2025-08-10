@@ -280,7 +280,7 @@ export const animationPerformance = {
         const frameTime = performance.now() - frameStart;
         totalFrameTime += frameTime;
         frameCount++;
-        callback();
+        callback(frameStart);
       });
     };
     

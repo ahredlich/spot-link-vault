@@ -236,7 +236,9 @@ class ShutdownManager {
     }
 
     if (errors.length > 0 && !options.suppressErrors) {
-      throw new AggregateError(errors, 'Multiple errors occurred during cleanup');
+      const error = new Error('Multiple errors occurred during cleanup');
+      (error as any).errors = errors;
+      throw error;
     }
   }
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Menu, Star, Shield, Zap, Heart, BookOpen, Users, Sparkles, Clock, X } from "lucide-react";
+import { Search, Plus, Grid, List, Bookmark, Tag, Calendar, ExternalLink, Menu, Star, Shield, Zap, Heart, BookOpen, Users, Sparkles, Clock, X, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -627,7 +627,7 @@ const BookmarkManager = () => {
 <div className="flex-1 flex flex-col min-w-0 lg:ml-64 overflow-visible">
         {/* Header - Quadruple Height Ultra Expanded */}
         <header className="sticky top-0 z-30 glass-card-secondary border-b border-white/10 overflow-visible">
-          <div className="p-6 sm:p-8 w-full relative overflow-visible space-y-6">
+          <div className="p-4 sm:p-5 w-full relative overflow-visible space-y-4">
             {/* Row 1 - Main Title and Primary Actions */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4 sm:gap-6">
@@ -684,47 +684,51 @@ const BookmarkManager = () => {
             </div>
 
             {/* Row 2 - Statistics and Overview */}
-            <div className="flex items-center justify-between bg-gradient-glass-tertiary rounded-xl p-4 border border-white/10">
-              <div className="flex items-center gap-6 text-base">
+            <div className="glass-card bg-gradient-subtle p-2 rounded-lg border border-primary/20 shadow-glass-lg backdrop-blur-xl">
+              <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                  <span className="font-semibold text-foreground">
-                    {filteredBookmarks.length} of {mockBookmarks.length} bookmarks
-                  </span>
-                </div>
-                {selectedCollection !== "All" && (
-                  <div className="flex items-center gap-2 text-accent">
-                    <Tag className="h-5 w-5" />
-                    <span className="font-medium">in {selectedCollection}</span>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-gradient-primary rounded-full shadow-glass-sm"></div>
+                    <span className="font-semibold text-xs bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                      {filteredBookmarks.length} of {mockBookmarks.length} bookmarks
+                    </span>
                   </div>
-                )}
-
-              </div>
-
-              <div className="flex items-center gap-6 text-base">
-                <div className="flex items-center gap-2">
-                  <Heart className="h-5 w-5 text-red-500" />
-                  <span className="font-medium">{mockBookmarks.filter(b => b.isFavorite).length} favorites</span>
+                  {selectedCollection !== "All" && (
+                    <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-accent/15 border border-accent/25">
+                      <Tag className="h-3 w-3 text-accent" />
+                      <span className="font-medium text-xs text-accent">in {selectedCollection}</span>
+                    </div>
+                  )}
                 </div>
+
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-green-500" />
-                  <span className="font-medium">{mockBookmarks.filter(b => b.isRead).length} read</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-blue-500" />
-                  <span className="font-medium">{mockBookmarks.filter(b => {
-                    const weekAgo = new Date();
-                    weekAgo.setDate(weekAgo.getDate() - 7);
-                    return b.createdAt >= weekAgo;
-                  }).length} this week</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-red-500/10 to-pink-500/10 border border-red-500/20">
+                    <Heart className="h-3 w-3 text-red-500 fill-current" />
+                    <span className="font-semibold text-xs text-red-500">{mockBookmarks.filter(b => b.isFavorite).length}</span>
+                    <span className="text-muted-foreground text-xs">favorites</span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                    <BookOpen className="h-3 w-3 text-green-500" />
+                    <span className="font-semibold text-xs text-green-500">{mockBookmarks.filter(b => b.isRead).length}</span>
+                    <span className="text-muted-foreground text-xs">read</span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-gradient-to-r from-blue-500/10 to-cyan-500/10 border border-blue-500/20">
+                    <Calendar className="h-3 w-3 text-blue-500" />
+                    <span className="font-semibold text-xs text-blue-500">{mockBookmarks.filter(b => {
+                      const weekAgo = new Date();
+                      weekAgo.setDate(weekAgo.getDate() - 7);
+                      return b.createdAt >= weekAgo;
+                    }).length}</span>
+                    <span className="text-muted-foreground text-xs">this week</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Row 3 - Search and Primary Filters */}
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-2 sm:gap-3">
               {/* Enhanced Search - Full width with larger size */}
-              <div className="flex-1 max-w-2xl">
+              <div className="flex-1 max-w-lg">
                 <EnhancedSearchInput
                   value={searchQuery}
                   onChange={setSearchQuery}
@@ -738,46 +742,43 @@ const BookmarkManager = () => {
               </div>
               
               {/* Quick Action Buttons */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1">
                 <Button
                   variant={quickFilter === 'favorites' ? "default" : "glass-secondary"}
-                  size="lg"
+                  size="sm"
                   onClick={() => handleQuickFilter('favorites')}
-                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                  className={`gap-1 h-6 px-2 transition-all duration-200 ${
                     quickFilter === 'favorites' 
                       ? "bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Star className={`h-5 w-5 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
-                  <span className="hidden sm:inline">Favorites</span>
+                  <Star className={`h-2 w-2 ${quickFilter === 'favorites' ? 'fill-current' : ''}`} />
+                  <span className="hidden sm:inline text-xs">Favorites</span>
                 </Button>
                 <Button
                   variant={quickFilter === 'recent' ? "default" : "glass-secondary"}
-                  size="lg"
+                  size="sm"
                   onClick={() => handleQuickFilter('recent')}
-                  className={`gap-2 h-12 px-4 transition-all duration-200 ${
+                  className={`gap-1 h-6 px-2 transition-all duration-200 ${
                     quickFilter === 'recent' 
                       ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg scale-105" 
                       : "hover:scale-105"
                   }`}
                 >
-                  <Clock className="h-5 w-5" />
-                  <span className="hidden sm:inline">Recent</span>
+                  <Clock className="h-2 w-2" />
+                  <span className="hidden sm:inline text-xs">Recent</span>
                 </Button>
               </div>
             </div>
 
             {/* Row 4 - Active Filters and Secondary Actions */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 flex-wrap">
-                {/* Quick Filter Indicators - Removed */}
-
-
+              <div className="flex items-center gap-1 flex-wrap">
                 {selectedCollection !== "All" && (
-                  <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-accent/10 border border-accent/20 text-accent">
-                    <Tag className="h-5 w-5" />
-                    <span className="font-semibold text-lg">{selectedCollection} Collection</span>
+                  <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-accent/10 border border-accent/20 text-accent">
+                    <Tag className="h-2 w-2" />
+                    <span className="font-medium text-xs">{selectedCollection} Collection</span>
                   </div>
                 )}
               </div>
