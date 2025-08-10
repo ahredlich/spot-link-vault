@@ -251,11 +251,7 @@ export const useStaggeredAnimation = (
     shouldAnimate,
     hasIntersected,
     itemCount,
-    calculatedStaggerDelay,
-    startDelay,
-    effectiveBatchSize,
-    maxConcurrent,
-    processBatchedAnimations,
+    maxConcurrent
   ]);
 
   // Stable references for common styles to prevent unnecessary re-renders
@@ -270,11 +266,11 @@ export const useStaggeredAnimation = (
   const visibleStylesCache = useRef<Map<number, React.CSSProperties>>(new Map());
   const visibleClassesCache = useRef<Map<number, string>>(new Map());
 
-  // Clear caches when animation config changes or item count changes
+  // Clear caches only when essential properties change
   useEffect(() => {
     visibleStylesCache.current.clear();
     visibleClassesCache.current.clear();
-  }, [animationConfig, type, itemCount]);
+  }, [type, itemCount]);
 
   // Cleanup function to clear caches on unmount
   useEffect(() => {
