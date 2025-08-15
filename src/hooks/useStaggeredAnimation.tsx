@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, useRef, useMemo } from 'react';
-import { useIntersectionObserver, useAnimationPerformance } from './useIntersectionObserver';
+import { useIntersectionObserver } from './useIntersectionObserver';
 import { 
   AnimationType, 
   StaggeredAnimationOptions, 
@@ -71,12 +71,10 @@ export const useStaggeredAnimation = (
   const animationQueue = useRef<number[]>([]);
   const rafId = useRef<number | null>(null);
 
-  // Use performance hook to check if animations should be enabled
-  const { 
-    shouldAnimate: performanceShouldAnimate, 
-    getOptimalBatchSize, 
-    getOptimalStaggerDelay: getPerformanceOptimalStaggerDelay 
-  } = useAnimationPerformance();
+  // Simplified performance check - just use a simple fallback
+  const performanceShouldAnimate = true;
+  const getOptimalBatchSize = () => 8;
+  const getPerformanceOptimalStaggerDelay = () => 100;
   
   // Adaptive threshold based on item count for better performance
   const adaptiveThreshold = useMemo(() => {
@@ -93,16 +91,16 @@ export const useStaggeredAnimation = (
     skip: disabled,
   });
 
-  // Calculate optimal stagger delay if not provided, using performance-aware calculation
+  // Calculate optimal stagger delay if not provided
   const calculatedStaggerDelay = useMemo(() => {
     if (staggerDelay) return staggerDelay;
     
-    // Use performance-aware calculation that considers device capabilities
-    const performanceDelay = getPerformanceOptimalStaggerDelay(itemCount);
+    // Simple fallback calculation
+    const performanceDelay = getPerformanceOptimalStaggerDelay();
     const fallbackDelay = animationTimings.getOptimalStaggerDelay(itemCount);
     
     return Math.max(performanceDelay, fallbackDelay);
-  }, [staggerDelay, itemCount, getPerformanceOptimalStaggerDelay]);
+  }, [staggerDelay, itemCount]);
 
   // Track which items should be visible - use Map for better performance with large counts
   const [visibleItems, setVisibleItems] = useState<Set<number>>(new Set());
@@ -388,7 +386,7 @@ export const useItemAnimation = (
   animationType: AnimationType = 'fade-in'
 ) => {
   const [hasAnimated, setHasAnimated] = useState(false);
-  const { shouldAnimate } = useAnimationPerformance();
+  const shouldAnimate = true; // Simplified for now
 
   useEffect(() => {
     if (isVisible && !hasAnimated && shouldAnimate) {
